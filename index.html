@@ -361,7 +361,7 @@ const chips = pairs => '<div class="chips">' +
     p[0] + ' <b>' + p[1] + '</b></i>').join('') + '</div>';
 
 const refCard = () =>
-  '<h2>House rules <a class="full" href="rules.html">full rules</a></h2><div class="card">' +
+  '<h2>House rules <a class="full" href="rules.html">full rules</a><a class="full" href="reference.html" style="margin-right:10px">reference</a></h2><div class="card">' +
   '<div class="grp">Card values</div>' +
   chips(CARD_VALUES.map(c => [c.short, c.v]).concat([
     ['blk 3', '-' + SCORE.blackThree, 'minus'],

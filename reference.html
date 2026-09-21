@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canasta Scoring Reference</title>
+<style>
+  :root{
+    --bg:#0f1a14; --panel:#16241c; --panel2:#1d3026; --line:#2c4a39;
+    --ink:#e8f2ec; --dim:#8fae9d; --gold:#e3b23c; --red:#d4604f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.4 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    padding-bottom:50px}
+  header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 16px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;letter-spacing:.3px}
+  header .sp{flex:1}
+  header a{color:var(--gold);text-decoration:none;font-size:13px;
+    border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+  header a:hover{border-color:var(--gold)}
+  main{max-width:860px;margin:0 auto;padding:18px 16px}
+  h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);
+    margin:28px 0 10px;display:flex;align-items:center;gap:12px}
+  h3:first-child{margin-top:0}
+  h3 button{background:var(--gold);color:#241a05;border:0;border-radius:7px;
+    padding:5px 12px;font:600 12px/1 inherit;font-family:inherit;cursor:pointer;
+    letter-spacing:0;text-transform:none}
+  h3 button:hover{filter:brightness(1.1)}
+  h3 em{font-style:normal;color:var(--dim);text-transform:none;letter-spacing:0;
+    font-size:12px;font-weight:400}
+
+  /* ---------- full sheet ---------- */
+  .sheet{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .blk{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;break-inside:avoid}
+  .blk h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+    color:var(--gold);font-weight:700}
+  .r{display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:14px}
+  .r+.r{border-top:1px solid rgba(44,74,57,.55)}
+  .r span{flex:1;color:var(--dim)}
+  .r b{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--gold)}
+  .r.neg b{color:var(--red)}
+  .wide{grid-column:1/-1}
+  .note{font-size:12px;color:var(--dim);margin:6px 0 0}
+  .lad{display:flex;gap:6px;flex-wrap:wrap}
+  .lad div{flex:1;min-width:52px;text-align:center;background:var(--panel2);
+    border-radius:8px;padding:7px 4px}
+  .lad div b{display:block;font-size:16px;color:var(--gold);font-variant-numeric:tabular-nums}
+  .lad div span{font-size:10px;color:var(--dim)}
+  .sheetfoot{display:none;font-size:9pt;color:#555;margin-top:10px}
+
+  /* ---------- playing card: exactly 2.5in x 3.5in, screen and paper ---------- */
+  .card{width:2.5in;height:3.5in;background:var(--panel);border:1px solid var(--line);
+    border-radius:10pt;padding:7pt 8pt;overflow:hidden;
+    font:6pt/1.3 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .card h4{font-size:9pt;margin:0 0 3pt;color:var(--gold)}
+  .card h4 small{float:right;font-size:5pt;color:var(--dim);font-weight:400;padding-top:3pt}
+  .g{margin-top:4pt}
+  .g b{display:block;font-size:5pt;text-transform:uppercase;letter-spacing:.6pt;
+    color:var(--gold);border-bottom:.5pt solid var(--line);padding-bottom:1pt;
+    margin-bottom:2pt;font-weight:700}
+  .g p{margin:0 0 1.5pt}
+  .g i{font-style:normal;color:var(--dim)}
+  .g u{text-decoration:none;font-weight:700}
+  .g .neg u{color:var(--red)}
+
+  @media screen{
+    .stage{height:7.15in}                 /* room for the 2x preview */
+    .card{transform:scale(2);transform-origin:top left}
+  }
+
+  @media print{
+    @page{margin:12mm}
+    body{background:#fff;color:#000;padding:0}
+    header,.hint,h3{display:none}
+    main{max-width:none;padding:0}
+    .stage{height:auto}
+    .card{transform:none}
+    /* one button prints one thing: default is the sheet */
+    body:not(.p-card) .cardwrap{display:none}
+    body.p-card .sheetwrap{display:none}
+
+    .sheet{gap:8px;grid-template-columns:1fr 1fr}
+    .blk{background:#fff;border:1px solid #999;border-radius:0;padding:8px 10px}
+    .blk h4{color:#000;border-bottom:1px solid #999;padding-bottom:3px}
+    .r{padding:2px 0;font-size:10pt}
+    .r span,.r b,.r.neg b{color:#000}
+    .note{color:#444}
+    .lad div{background:none;border:1px solid #999;border-radius:0}
+    .lad div b{color:#000;font-size:12pt}
+    .lad div span{color:#333}
+    .sheetfoot{display:block}
+
+    .card{background:#fff;color:#000;border:.5pt dashed #777;border-radius:0}
+    .card h4{color:#000}
+    .card h4 small{color:#444}
+    .g b{color:#000;border-bottom:.5pt solid #999}
+    .g i{color:#444}
+    .g .neg u{color:#000}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Canasta &mdash; Scoring Reference</h1>
+  <span class="sp"></span>
+  <a href="rules.html">Full rules</a>
+  <a href="index.html">Scorer</a>
+</header>
+<main>
+  <section class="sheetwrap">
+    <h3>Full sheet <button data-print="sheet">Print sheet</button>
+      <em>one page, for the table</em></h3>
+    <div class="sheet">
+      <div class="blk"><h4>Card values</h4><div id="s-cards"></div>
+        <p class="note">3s are never melded and only count against you &mdash; the
+        one exception is three black 3s played to go out.</p></div>
+      <div class="blk"><h4>Canastas</h4><div id="s-canastas"></div>
+        <p class="note">Book it with a red card on top if natural, black if dirty.</p></div>
+      <div class="blk"><h4>Bonuses</h4><div id="s-bonuses"></div></div>
+      <div class="blk"><h4>The game</h4><div id="s-game"></div></div>
+      <div class="blk wide"><h4>Minimum to go down &mdash; by your side's score</h4>
+        <div class="lad" id="s-ladder"></div></div>
+    </div>
+    <p class="sheetfoot">Full rules: hersha.github.io/Canasta/rules.html</p>
+  </section>
+
+  <section class="cardwrap">
+    <h3>Playing card <button data-print="card">Print card</button>
+      <em>actual size, 2.5 &times; 3.5in &mdash; trim the dashed line</em></h3>
+    <div class="stage">
+      <div class="card">
+        <h4>Canasta <small>house rules</small></h4>
+        <div class="g"><b>Card points</b><div id="c-cards"></div></div>
+        <div class="g"><b>Canastas</b><div id="c-canastas"></div></div>
+        <div class="g"><b>Bonuses</b><div id="c-bonuses"></div></div>
+        <div class="g"><b>Minimum to go down</b><div id="c-ladder"></div></div>
+        <div class="g"><b>Game</b><div id="c-game"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="rules.js"></script>
+<script>
+const el = id => document.getElementById(id);
+
+/* ---------- sheet: label/value rows ---------- */
+const rows = (id, data) => el(id).innerHTML = data.map(r =>
+  '<div class="r' + (r[2] ? ' neg' : '') + '"><span>' + r[0] +
+  '</span><b>' + r[1] + '</b></div>').join('');
+
+rows('s-cards', CARD_VALUES.map(c => [c.short, c.v]).concat([
+  ['Black 3, in hand', '-' + SCORE.blackThree, true],
+  ['Red 3, in hand',   '-' + SCORE.red3InHand, true]
+]));
+rows('s-canastas', [
+  ['Natural',            money(SCORE.natural)],
+  ['Dirty (has wilds)',  money(SCORE.dirty)],
+  ['Wild (seven wilds)', money(SCORE.wild)]
+]);
+rows('s-bonuses', [
+  ['Red 3, down',                              SCORE.red3],
+  ['Red 3s, ' + SCORE.red3DoubleAt + '+ down', 'double'],
+  ['Red 3s with no canasta',                   'negative', true],
+  ['Going out',                                '+' + SCORE.goOut],
+  ['Perfect deal',                             '+' + SCORE.perfectCut]
+]);
+rows('s-game', [
+  ['Decks',              DEAL.decks + ' + ' + DEAL.jokers + ' jokers'],
+  ['Dealt each',         DEAL.hand],
+  ['Per turn',           'draw ' + DEAL.draw + ', discard 1'],
+  ['Wild',               '2s, Jokers'],
+  ['Canastas to go out', DEAL.canastasToGoOut],
+  ['Play to',            money(TARGET_DEFAULT)]
+]);
+el('s-ladder').innerHTML = meldLadder().map(s =>
+  '<div><b>' + s.need + '</b><span>' + s.at + '</span></div>').join('');
+
+/* ---------- card: same numbers, run inline to fit 2.5x3.5in ---------- */
+const dot = xs => xs.join(' <i>&middot;</i> ');
+const v   = (label, val) => label + ' <u>' + val + '</u>';
+
+el('c-cards').innerHTML =
+  '<p>' + dot(CARD_VALUES.map(c => v(c.short, c.v))) + '</p>' +
+  '<p class="neg">' + dot([v('blk 3', '&minus;' + SCORE.blackThree),
+                           v('red 3 in hand', '&minus;' + SCORE.red3InHand)]) +
+  ' <i>(never melded)</i></p>';
+
+el('c-canastas').innerHTML = '<p>' + dot([
+  v('natural', money(SCORE.natural)),
+  v('dirty',   money(SCORE.dirty)),
+  v('wild',    money(SCORE.wild))]) + '</p>';
+
+el('c-bonuses').innerHTML =
+  '<p>' + dot([v('red 3 down', SCORE.red3),
+               v(SCORE.red3DoubleAt + '+ red 3s', 'x2')]) +
+  ' <i>&middot; no canasta &rarr; negative</i></p>' +
+  '<p>' + dot([v('going out', '+' + SCORE.goOut),
+               v('perfect deal', '+' + SCORE.perfectCut)]) + '</p>';
+
+el('c-ladder').innerHTML = '<p>' + dot(meldLadder().map(s => v(s.at, s.need))) + '</p>';
+
+el('c-game').innerHTML =
+  '<p>' + dot([v('decks', DEAL.decks + '+' + DEAL.jokers + ' jkr'),
+               v('dealt', DEAL.hand),
+               v('turn', 'draw ' + DEAL.draw + ', disc 1')]) + '</p>' +
+  '<p>' + dot([v('wild', '2s, Jkr'),
+               v('to go out', DEAL.canastasToGoOut + ' canastas'),
+               v('play to', money(TARGET_DEFAULT))]) + '</p>';
+
+/* Each button prints only its own layout; the class is off again straight
+   after, so a plain Ctrl+P still gets the sheet. */
+document.querySelectorAll('[data-print]').forEach(btn => btn.onclick = () => {
+  document.body.classList.toggle('p-card', btn.dataset.print === 'card');
+  window.print();
+  document.body.classList.remove('p-card');
+});
+</script>
+</body>
+</html>
