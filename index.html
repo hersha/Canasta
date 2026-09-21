@@ -14,14 +14,15 @@
     font:16px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     padding:0 0 60px;-webkit-text-size-adjust:100%}
   header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 16px;
-    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
   header h1{font-size:19px;margin:0;letter-spacing:.3px}
   header .sp{flex:1}
+  /* matches button.ghost.tiny so the nav reads as one row of controls */
+  header a{color:var(--dim);text-decoration:none;font-size:13px;
+    border:1px solid var(--line);border-radius:8px;padding:4px 9px}
+  header a:hover{color:var(--gold);border-color:var(--gold)}
   main{max-width:960px;margin:0 auto;padding:16px}
   h2{font-size:15px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin:24px 0 10px}
-  h2 .full{float:right;font-size:12px;text-transform:none;letter-spacing:0;
-    color:var(--gold);text-decoration:none}
-  h2 .full:hover{text-decoration:underline}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
   label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
   input[type=text],input[type=number],select{
@@ -120,6 +121,8 @@
 <header>
   <h1>Canasta</h1>
   <span class="sp"></span>
+  <a href="rules.html">Rules</a>
+  <a href="reference.html">Reference</a>
   <button class="ghost tiny" id="reset">Games</button>
 </header>
 <main id="app"></main>
@@ -361,7 +364,7 @@ const chips = pairs => '<div class="chips">' +
     p[0] + ' <b>' + p[1] + '</b></i>').join('') + '</div>';
 
 const refCard = () =>
-  '<h2>House rules <a class="full" href="rules.html">full rules</a><a class="full" href="reference.html" style="margin-right:10px">reference</a></h2><div class="card">' +
+  '<h2>House rules</h2><div class="card">' +
   '<div class="grp">Card values</div>' +
   chips(CARD_VALUES.map(c => [c.short, c.v]).concat([
     ['blk 3', '-' + SCORE.blackThree, 'minus'],
