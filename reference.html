@@ -38,23 +38,31 @@
   body.v-card  .sheetwrap{display:none}
 
   /* ---------- full sheet ---------- */
-  .sheet{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  /* Two columns on a laptop, so the four blocks pair off instead of leaving
+     one stranded. align-items:start keeps a short block short rather than
+     stretching it to match its neighbour. */
+  .sheet{display:grid;gap:14px;align-items:start;
+    grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
   .blk{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-    padding:12px 14px;break-inside:avoid}
-  .blk h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:1px;
-    color:var(--gold);font-weight:700}
-  .r{display:flex;gap:10px;align-items:baseline;padding:4px 0;font-size:14px}
+    padding:14px 16px;break-inside:avoid}
+  .blk h4{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+    color:var(--gold);font-weight:700;border-bottom:1px solid var(--line);
+    padding-bottom:7px}
+  .r{display:flex;gap:12px;align-items:baseline;padding:5px 0;font-size:15px}
   .r+.r{border-top:1px solid rgba(44,74,57,.55)}
   .r span{flex:1;color:var(--dim)}
-  .r b{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--gold)}
+  .r b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;
+    color:var(--gold)}
   .r.neg b{color:var(--red)}
   .wide{grid-column:1/-1}
-  .note{font-size:12px;color:var(--dim);margin:6px 0 0}
-  .lad{display:flex;gap:6px;flex-wrap:wrap}
-  .lad div{flex:1;min-width:52px;text-align:center;background:var(--panel2);
-    border-radius:8px;padding:7px 4px}
-  .lad div b{display:block;font-size:16px;color:var(--gold);font-variant-numeric:tabular-nums}
-  .lad div span{font-size:10px;color:var(--dim)}
+  .note{font-size:12.5px;color:var(--dim);margin:9px 0 0;line-height:1.45;
+    border-top:1px dashed var(--line);padding-top:8px}
+  .lad{display:flex;gap:8px;flex-wrap:wrap}
+  .lad div{flex:1;min-width:56px;text-align:center;background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;padding:9px 4px}
+  .lad div b{display:block;font-size:20px;color:var(--gold);
+    font-variant-numeric:tabular-nums;line-height:1.1}
+  .lad div span{font-size:10.5px;color:var(--dim)}
   .sheetfoot{display:none;font-size:9pt;color:#555;margin-top:10px}
 
   /* ---------- playing card: exactly 2.5in x 3.5in, screen and paper ---------- */
@@ -72,9 +80,13 @@
   .g u{text-decoration:none;font-weight:700}
   .g .neg u{color:var(--red)}
 
+  /* zoom (not transform) so the card still takes up its magnified size in
+     layout - that is what lets margin:auto centre it. */
   @media screen{
-    .stage{height:7.15in}                 /* room for the 2x preview */
-    .card{transform:scale(2);transform-origin:top left}
+    .card{zoom:2;margin:0 auto}
+  }
+  @media screen and (max-width:620px){
+    .card{zoom:1.2}
   }
 
   @media print{
@@ -82,8 +94,6 @@
     body{background:#fff;color:#000;padding:0}
     header,.toolbar{display:none}
     main{max-width:none;padding:0}
-    .stage{height:auto}
-    .card{transform:none}
 
     .sheet{gap:8px;grid-template-columns:1fr 1fr}
     .blk{background:#fff;border:1px solid #999;border-radius:0;padding:8px 10px}
@@ -127,10 +137,10 @@
       <div class="blk"><h4>Card values</h4><div id="s-cards"></div>
         <p class="note">3s are never melded and only count against you &mdash; the
         one exception is three black 3s played to go out.</p></div>
+      <div class="blk"><h4>The game</h4><div id="s-game"></div></div>
+      <div class="blk"><h4>Bonuses</h4><div id="s-bonuses"></div></div>
       <div class="blk"><h4>Canastas</h4><div id="s-canastas"></div>
         <p class="note">Book it with a red card on top if natural, black if dirty.</p></div>
-      <div class="blk"><h4>Bonuses</h4><div id="s-bonuses"></div></div>
-      <div class="blk"><h4>The game</h4><div id="s-game"></div></div>
       <div class="blk wide"><h4>Minimum to go down &mdash; by your side's score</h4>
         <div class="lad" id="s-ladder"></div></div>
     </div>
