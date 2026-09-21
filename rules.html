@@ -190,7 +190,11 @@
   <b class="n" id="r3n"></b> of them in the shoe, two per deck.</p>
   <p>Putting one down is up to you: hold it as long as you like and place it on
   your turn whenever you want, and you <b>draw a replacement card</b> when you
-  do. Holding one is what lets you discard it, which freezes the pile.</p>
+  do.</p>
+  <p>Because you can hold one, you can also <b>discard</b> one &mdash; and a
+  discarded red 3 <b>freezes the pile</b>, exactly as a wild does. It is the one
+  good reason to sit on a red 3 rather than get it down, though you give up the
+  <b class="n" id="r3give"></b> it would have paid you.</p>
   <p>Each is worth <b class="n" id="r3"></b>. If your <b>side</b> has
   <b class="n" id="r3d"></b> or more <i>on the table</i>, the whole lot doubles
   &mdash; one caught in your hand is worth
@@ -277,6 +281,7 @@ el('r3worst').textContent = '-' + money(DEAL.red3s * SCORE.red3 * 2);
 el('r3n').textContent    = DEAL.red3s;
 el('r3n2').textContent   = DEAL.red3s;
 el('r3d2').textContent   = SCORE.red3DoubleAt;
+el('r3give').textContent = SCORE.red3;
 el('mcgo').textContent   = DEAL.canastasToGoOut;
 el('b3').textContent  = SCORE.blackThree;
 el('target').textContent = money(TARGET_DEFAULT);
