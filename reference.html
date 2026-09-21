@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Canasta Scoring Reference</title>
+<link rel="stylesheet" href="nav.css">
 <style>
   :root{
     --bg:#0f1a14; --panel:#16241c; --panel2:#1d3026; --line:#2c4a39;
@@ -13,13 +14,6 @@
   body{margin:0;background:var(--bg);color:var(--ink);
     font:15px/1.4 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
     padding-bottom:50px}
-  header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 16px;
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  header h1{font-size:18px;margin:0;letter-spacing:.3px}
-  header .sp{flex:1}
-  header a{color:var(--gold);text-decoration:none;font-size:13px;
-    border:1px solid var(--line);border-radius:8px;padding:6px 12px}
-  header a:hover{border-color:var(--gold)}
   main{max-width:860px;margin:0 auto;padding:18px 16px}
   .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -93,7 +87,13 @@
   @media print{
     @page{margin:18mm}
     body{background:#fff;color:#000;padding:0}
-    header,.toolbar{display:none}
+    .toolbar{display:none}
+    /* the sheet needs a title; the card carries its own, so drop it there */
+    header{position:static;display:block;background:none;border:0;padding:0;
+      margin:0 0 12pt}
+    header h1{color:#000;font-size:14pt}
+    header .sp,header nav{display:none}
+    body.v-card header{display:none}
     main{max-width:none;padding:0}
 
     .sheet{gap:8px;grid-template-columns:1fr 1fr}
@@ -120,8 +120,11 @@
 <header>
   <h1>Canasta &mdash; Scoring Reference</h1>
   <span class="sp"></span>
-  <a href="rules.html">Full rules</a>
-  <a href="index.html">Scorer</a>
+  <nav>
+    <a href="index.html">Scorer</a>
+    <a href="rules.html">Rules</a>
+    <a href="reference.html" aria-current="page">Reference</a>
+  </nav>
 </header>
 <main>
   <div class="toolbar">

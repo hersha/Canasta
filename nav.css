@@ -1,0 +1,22 @@
+/* Shared page chrome. Each page defines the palette in its own :root and
+   supplies its own <h1>; everything else about the header lives here so the
+   three pages cannot drift apart again. */
+
+header{background:var(--panel);border-bottom:1px solid var(--line);
+  padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:5;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+header h1{font-size:19px;margin:0;letter-spacing:.3px;font-family:inherit}
+header .sp{flex:1}
+
+header nav{display:flex;gap:6px;flex-wrap:wrap}
+header nav a{color:var(--dim);text-decoration:none;font-size:13px;
+  border:1px solid var(--line);border-radius:8px;padding:5px 11px;
+  white-space:nowrap}
+header nav a:hover{color:var(--ink);border-color:var(--gold)}
+header nav a[aria-current="page"]{background:var(--gold);color:#241a05;
+  border-color:var(--gold);font-weight:600;cursor:default}
+
+@media print{
+  header nav{display:none}
+}
