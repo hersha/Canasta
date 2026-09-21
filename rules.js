@@ -28,6 +28,15 @@ const meldMin = score => MELD_MIN.find(r => score >= r[0])[1];
 
 const TARGET_DEFAULT = 10000;
 
+const DEAL = {
+  decks: 3,
+  jokers: 6,
+  hand: 15,          // cards dealt to each player
+  draw: 1,           // cards drawn per turn
+  canastasToGoOut: 2
+};
+DEAL.cards = DEAL.decks * 52 + DEAL.jokers;
+
 const money = n => (n<0?'-':'') + Math.abs(n).toLocaleString();
 
 // low tier first, for reading left to right
