@@ -31,7 +31,7 @@ const TARGET_DEFAULT = 10000;
 const DEAL = {
   decks: 3,
   jokers: 6,
-  hand: 15,          // cards dealt to each player
+  hand: 17,          // cards dealt to each player
   draw: 2,           // cards drawn per turn (discard is always one)
   canastasToGoOut: 2
 };

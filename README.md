@@ -37,7 +37,8 @@ npx http-server . -p 8099 -c-1
 
 ## House rules in brief
 
-Three decks and six jokers, fifteen cards each. 2s and Jokers are wild. Natural
+Three decks and six jokers, seventeen cards each, draw two and discard one.
+2s and Jokers are wild. Natural
 canasta 500, dirty 250, wild 2,000. Red 3s are 100 each and double at four or
 more — but count against you if your side ends the round with no canasta. Two
 canastas before anyone can go out. Going out and a perfect cut are 100 each.
