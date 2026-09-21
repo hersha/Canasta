@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canasta House Rules</title>
+<style>
+  :root{
+    --bg:#0f1a14; --panel:#16241c; --panel2:#1d3026; --line:#2c4a39;
+    --ink:#e8f2ec; --dim:#8fae9d; --gold:#e3b23c; --red:#d4604f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:17px/1.6 ui-serif,Georgia,"Times New Roman",serif;
+    padding:0 0 80px;-webkit-text-size-adjust:100%}
+  header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 16px;
+    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  header h1{font-size:19px;margin:0;letter-spacing:.3px;font-family:inherit}
+  header .sp{flex:1}
+  header a{color:var(--gold);text-decoration:none;font-size:14px;
+    border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+  header a:hover{border-color:var(--gold)}
+  main{max-width:680px;margin:0 auto;padding:8px 16px}
+  .lede{color:var(--dim);font-size:16px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  h2{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);
+    margin:34px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  .dim{color:var(--dim)}
+  b.n{color:var(--gold);font-variant-numeric:tabular-nums;
+    font-family:ui-sans-serif,system-ui,sans-serif}
+  table{width:100%;border-collapse:collapse;margin:0 0 16px;
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+  td+td,th+th{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);font-weight:600}
+  tbody tr:last-child td{border-bottom:0}
+  td b{color:var(--gold)}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:4px 16px;margin:0 0 16px}
+  .warn{border-left:3px solid var(--red);background:rgba(212,96,79,.07);
+    border-radius:8px;padding:12px 16px;margin:0 0 16px;font-size:15px}
+  .warn b{color:var(--red)}
+  .todo{border-left:3px solid var(--gold);background:rgba(227,178,60,.07);
+    border-radius:8px;padding:12px 16px;font-size:15px}
+  .todo b{color:var(--gold)}
+  .calc{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px}
+  .calc td{padding:5px 10px;border:0}
+  .calc tr.sum td{border-top:1px solid var(--line);font-weight:700;color:var(--gold)}
+  footer{max-width:680px;margin:40px auto 0;padding:0 16px;color:var(--dim);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Canasta &mdash; House Rules</h1>
+  <span class="sp"></span>
+  <a href="index.html">Scorer</a>
+</header>
+<main>
+  <p class="lede">How we score it. These are house rules and differ from the
+  standard game in a few places &mdash; the wild canasta especially. The scorer
+  uses exactly the numbers on this page.</p>
+
+  <h2>Wild cards</h2>
+  <p>Twos and Jokers are wild.</p>
+
+  <h2>What the cards are worth</h2>
+  <p>These are the card points you count up at the end of a round: everything
+  you have melded on the table counts <i>for</i> you, everything still in your
+  hand counts <i>against</i> you.</p>
+  <table id="cards">
+    <thead><tr><th>Card</th><th>Points</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Going down</h2>
+  <p>Your first meld of a round has to be worth a minimum number of card points,
+  and that minimum rises as your score does. Where you sit right now decides what
+  you need:</p>
+  <table id="ladder">
+    <thead><tr><th>Your score</th><th>Minimum to go down</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p class="dim">A side that has gone negative needs the lowest minimum of all.</p>
+
+  <h2>Canastas</h2>
+  <p>Seven cards of a rank. What it is worth depends on how clean it is:</p>
+  <table id="canastas">
+    <thead><tr><th>Canasta</th><th>Bonus</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p>The wild canasta &mdash; seven wild cards together &mdash; is the big one,
+  and is a house rule; most canasta variants do not allow it at all.</p>
+
+  <h2>Red 3s</h2>
+  <p>Red 3s are bonus cards. You do not meld them or play them; they just sit
+  there and count. Each is worth <b class="n" id="r3"></b>, and if you are
+  holding <b class="n" id="r3d"></b> or more, the whole lot doubles.</p>
+  <div class="warn">
+    <p><b>The catch:</b> if your side finishes the round without a single
+    canasta, your red 3s count <b>against</b> you instead &mdash; at the same
+    value, doubling included. Four red 3s and no canasta is
+    <b class="n" id="r3worst"></b>.</p>
+  </div>
+
+  <h2>Black 3s</h2>
+  <p>Black 3s are worth <b class="n" id="b3"></b> and are only ever a safe
+  discard &mdash; they never get played down. In practice that means they only
+  show up as points against you, in your hand at the end of a round.</p>
+
+  <h2>Ending the round</h2>
+  <table id="bonuses">
+    <thead><tr><th>Bonus</th><th>Points</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p>A perfect cut is cutting the deck to exactly the right number of cards to
+  deal, on the nose.</p>
+
+  <h2>Winning</h2>
+  <p>First side to <b class="n" id="target"></b> takes it. You can play
+  head to head, three ways, or in partnerships.</p>
+
+  <h2>A round, counted up</h2>
+  <p>Say your side finished a round with two natural canastas, one dirty
+  canasta, three red 3s, <b class="n">210</b> in melded card points,
+  <b class="n">40</b> still in hand, and you went out:</p>
+  <div class="box">
+    <table class="calc"><tbody id="example"></tbody></table>
+  </div>
+
+  <div class="todo">
+    <p><b>Not covered here:</b> the deal, drawing and discarding, taking the
+    pile, and freezing it. Those are unwritten so far &mdash; this page documents
+    scoring only. Worth adding before handing it to anyone who has not played
+    with us.</p>
+  </div>
+</main>
+<footer>The scorer and this page read the same numbers, so they cannot disagree.</footer>
+
+<script src="rules.js"></script>
+<script>
+const el = id => document.getElementById(id);
+const rows = (id, data) => el(id).innerHTML = data.map(r =>
+  '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td></tr>').join('');
+
+rows('cards', CARD_VALUES.map(c => [c.long, c.v]));
+rows('ladder', meldLadder().map(s => [s.at, s.need]));
+rows('canastas', [
+  ['Natural &mdash; no wilds in it', money(SCORE.natural)],
+  ['Dirty &mdash; contains wilds',   money(SCORE.dirty)],
+  ['Wild &mdash; seven wild cards',  money(SCORE.wild)]
+]);
+rows('bonuses', [
+  ['Going out',   '+' + SCORE.goOut],
+  ['Perfect cut', '+' + SCORE.perfectCut]
+]);
+
+el('r3').textContent  = SCORE.red3;
+el('r3d').textContent = SCORE.red3DoubleAt;
+el('r3worst').textContent = '-' + money(SCORE.red3DoubleAt * SCORE.red3 * 2);
+el('b3').textContent  = CARD_VALUES[0].v;
+el('target').textContent = money(TARGET_DEFAULT);
+
+// worked example, arithmetic done from the same constants rather than typed out
+const ex = [
+  ['2 natural canastas', 2 * SCORE.natural],
+  ['1 dirty canasta',    SCORE.dirty],
+  ['3 red 3s',           3 * SCORE.red3],
+  ['Melded card points', 210],
+  ['Left in hand',       -40],
+  ['Went out',           SCORE.goOut]
+];
+el('example').innerHTML = ex.map(r =>
+    '<tr><td>' + r[0] + '</td><td>' + (r[1] < 0 ? '-' : '+') +
+    money(Math.abs(r[1])) + '</td></tr>').join('') +
+  '<tr class="sum"><td>Round total</td><td>' +
+    money(ex.reduce((s,r) => s + r[1], 0)) + '</td></tr>';
+</script>
+</body>
+</html>

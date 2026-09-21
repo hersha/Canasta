@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canasta Scorer</title>
+<style>
+  :root{
+    --bg:#0f1a14; --panel:#16241c; --panel2:#1d3026; --line:#2c4a39;
+    --ink:#e8f2ec; --dim:#8fae9d; --gold:#e3b23c; --red:#d4604f; --green:#4fbf7f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    padding:0 0 60px;-webkit-text-size-adjust:100%}
+  header{background:var(--panel);border-bottom:1px solid var(--line);padding:14px 16px;
+    display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:5}
+  header h1{font-size:19px;margin:0;letter-spacing:.3px}
+  header .sp{flex:1}
+  main{max-width:960px;margin:0 auto;padding:16px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin:24px 0 10px}
+  h2 .full{float:right;font-size:12px;text-transform:none;letter-spacing:0;
+    color:var(--gold);text-decoration:none}
+  h2 .full:hover{text-decoration:underline}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+  label{display:block;font-size:12px;color:var(--dim);margin-bottom:4px}
+  input[type=text],input[type=number],select{
+    width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+    border-radius:8px;padding:9px 10px;font-size:16px;font-family:inherit}
+  input[type=number]{text-align:right}
+  input:focus,select:focus{outline:2px solid var(--gold);outline-offset:-1px}
+  button{background:var(--gold);color:#241a05;border:0;border-radius:8px;padding:10px 16px;
+    font-size:15px;font-weight:600;font-family:inherit;cursor:pointer}
+  button.ghost{background:transparent;color:var(--dim);border:1px solid var(--line)}
+  button.tiny{padding:4px 9px;font-size:13px}
+  button:hover{filter:brightness(1.1)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .row>*{flex:1;min-width:120px}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .board{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+  .board .t{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+  .board .t.lead{border-color:var(--gold)}
+  /* .down after .lead so "in the hole" wins over "leading" when both apply */
+  .board .t.down{border-color:var(--red);background:
+    linear-gradient(180deg,rgba(212,96,79,.14),rgba(212,96,79,0)) ,var(--panel)}
+  .board .t.down .score{color:var(--red)}
+  .board .t.down .meld b{color:var(--red)}
+  .board .t.down .bar{background:rgba(212,96,79,.22)}
+  .board .name{font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .board .score{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+  .board .meld{font-size:11px;color:var(--dim);margin-top:3px}
+  .board .meld b{color:var(--gold);font-size:13px}
+  .bar{height:7px;background:var(--line);border-radius:3px;margin-top:8px;
+    overflow:hidden;position:relative}
+  .bar i{display:block;height:100%;background:var(--gold)}
+  /* meld breakpoints, notched out in the page colour so they read over track and fill alike */
+  .bar u{position:absolute;top:0;bottom:0;width:2px;background:var(--bg);text-decoration:none}
+  .f{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .f label{flex:1;margin:0;font-size:13px;color:var(--ink)}
+  .f label em{color:var(--dim);font-style:normal;font-size:11px}
+  .f input[type=number]{width:74px;flex:none;padding:6px 8px}
+  .chk{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px;cursor:pointer}
+  .chk input{width:18px;height:18px;accent-color:var(--gold)}
+  .chk em{color:var(--dim);font-style:normal;font-size:11px}
+  .card.saved{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .card.saved:hover{border-color:var(--gold)}
+  .card.saved.won{border-color:var(--gold);background:
+    linear-gradient(90deg,rgba(227,178,60,.17),rgba(227,178,60,.02)),var(--panel)}
+  .card.saved.won .sname{color:var(--gold)}
+  .cup{font-size:22px;line-height:1;flex:0 0 auto}
+  .wname{color:var(--gold);font-weight:700;letter-spacing:.3px}
+  .sname{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ssub{font-size:12px;color:var(--dim);margin-top:3px}
+  .sub{font-size:12px;color:var(--dim);border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+  .rt{display:flex;justify-content:space-between;align-items:baseline;
+    border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-weight:700}
+  .rt .v{font-size:24px;font-variant-numeric:tabular-nums}
+  .neg{color:var(--red)} .pos{color:var(--green)}
+  details.counter{margin:2px 0 10px}
+  details.counter summary{font-size:12px;color:var(--gold);cursor:pointer;list-style:none}
+  details.counter summary::-webkit-details-marker{display:none}
+  details.counter summary::before{content:"\25B8  "}
+  details.counter[open] summary::before{content:"\25BE  "}
+  .cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+  .cgrid label{font-size:11px;text-align:center}
+  .cgrid input{padding:6px 4px;text-align:center}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line);font-size:14px}
+  th:first-child,td:first-child{text-align:left;color:var(--dim)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim)}
+  tfoot td{font-weight:700;font-size:16px;border-bottom:0}
+  .win{background:linear-gradient(90deg,var(--gold),#f0d27a);color:#241a05;
+    border-radius:12px;padding:14px 16px;font-weight:700;font-size:18px;margin-bottom:14px}
+  .called{float:right;font-size:11px;font-weight:600;text-transform:uppercase;
+    letter-spacing:.8px;opacity:.65;padding-top:5px}
+  .grp{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--gold);
+    margin:14px 0 5px;opacity:.85}
+  .grp:first-child{margin-top:0}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chips i{font-style:normal;background:var(--panel2);border-radius:99px;
+    padding:5px 11px;font-size:13px;color:var(--dim)}
+  .chips i b{color:var(--gold);font-variant-numeric:tabular-nums}
+  .lad{display:flex;gap:6px}
+  .lad div{flex:1;text-align:center;background:var(--panel2);border-radius:8px;padding:8px 4px}
+  .lad div b{display:block;font-size:17px;color:var(--gold);font-variant-numeric:tabular-nums}
+  .lad div span{font-size:10px;color:var(--dim)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Canasta</h1>
+  <span class="sp"></span>
+  <button class="ghost tiny" id="reset">Games</button>
+</header>
+<main id="app"></main>
+
+<script src="rules.js"></script>
+<script>
+const $ = (s,r=document)=>r.querySelector(s);
+const app = $('#app');
+const KEY = 'canasta.v1';
+const esc = s => String(s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+// All games live in one array, most recent first; the active game is always games[0],
+// so S is a live reference into the array and save() just writes the whole thing.
+function loadGames(){
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!raw) return [];
+  return Array.isArray(raw) ? raw : [raw];   // migrate: v1 stored a single bare game
+}
+let games = loadGames();
+let S = games[0] || null;
+// storage can be blocked (private mode, opaque origin) - never let it kill a render
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(games)); } catch (e) {} };
+
+/* ---------- scoring: house rules ---------- */
+const BLANK = {natural:0,dirty:0,wild:0,red3:0,meld:0,hand:0,wentOut:false,perfectCut:false};
+
+// SCORE, CARD_VALUES, MELD_MIN, meldMin, money and TARGET_DEFAULT all live in rules.js,
+// shared with the player reference page so the two can't disagree.
+
+// A game ends by reaching the target, or by being called early.
+// Calling is a reversible flag, so there is nothing to confirm.
+const isDone = (g,t) => !!g.called || Math.max.apply(null, t) >= g.target;
+// plural: calling early makes an exact tie far more likely than racing to the target
+const leaders = (g,t) => { const top = Math.max.apply(null, t);
+  return g.teams.filter((_,i) => t[i] === top); };
+
+// breakpoint notches on the progress track, titled so you can hover for the tier
+const tickMarks = () => MELD_MIN
+  .filter(r => r[0] > 0 && r[0] < S.target)
+  .map(r => '<u style="left:' + (r[0]/S.target*100) + '%" title="' +
+            money(r[0]) + ': need ' + r[1] + ' to go down"></u>').join('');
+
+function scoreTeam(t){
+  const canastas = t.natural + t.dirty + t.wild;
+  const red3 = t.red3 * SCORE.red3 * (t.red3 >= SCORE.red3DoubleAt ? 2 : 1);
+  return t.natural*SCORE.natural + t.dirty*SCORE.dirty + t.wild*SCORE.wild
+       + (canastas > 0 ? red3 : -red3)
+       + t.meld - t.hand
+       + (t.wentOut ? SCORE.goOut : 0)
+       + (t.perfectCut ? SCORE.perfectCut : 0);
+}
+
+const totals = (g) => (g||S).teams.map((_,i) =>
+  (g||S).rounds.reduce((sum,r) => sum + scoreTeam(r[i]), 0));
+
+/* ---------- setup ---------- */
+const MODES = {'1v1':[1,1], '1v1v1':[1,1,1], '2v2':[2,2]};
+
+function savedList(){
+  if (!games.length) return '';
+  return '<h2>Saved games</h2>' + games.map((g,i) => {
+    const t = totals(g), top = Math.max.apply(null, t), done = isDone(g, t);
+    const up = leaders(g, t);
+    const rounds = g.rounds.length + ' round' + (g.rounds.length===1?'':'s') +
+                   (g.called ? ', called' : '');
+    return '<div class="card saved ' + (done?'won':'') + '" data-open="' + i + '">' +
+      (done ? '<div class="cup">&#127942;</div>' : '') +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="sname">' + esc(g.teams.join('  v  ')) + '</div>' +
+        '<div class="ssub">' + (done
+          ? '<b class="wname">' + up.map(esc).join(' &amp; ') + '</b>' +
+            (up.length > 1 ? ' tied at ' : ' took it, ') + money(top) + ' &middot; ' + rounds
+          : rounds + ' &middot; ' + t.map(money).join(' - ')) + '</div>' +
+      '</div>' +
+      '<button class="ghost tiny" data-drop="' + i + '">x</button>' +
+    '</div>';
+  }).join('');
+}
+
+function renderSetup(mode){
+  mode = mode || '2v2';
+  const sides = MODES[mode];
+  app.innerHTML = savedList() +
+  '<h2>New game</h2>' +
+  '<div class="card">' +
+    '<div class="row">' +
+      '<div style="flex:0 0 160px"><label>Format</label>' +
+        '<select id="mode">' + Object.keys(MODES).map(m =>
+          '<option ' + (m===mode?'selected':'') + '>' + m + '</option>').join('') + '</select></div>' +
+      '<div style="flex:0 0 160px"><label>Play to</label>' +
+        '<input type="number" id="target" value="' + TARGET_DEFAULT + '" step="500"></div>' +
+    '</div>' +
+    '<h2>' + (mode==='2v2' ? 'Teams' : 'Players') + '</h2>' +
+    '<div class="grid">' + sides.map((n,i) =>
+      '<div><label>' + (mode==='2v2' ? 'Team '+(i+1) : 'Player '+(i+1)) + '</label>' +
+      Array.from({length:n}).map(() =>
+        '<input type="text" class="pname" data-side="' + i + '" placeholder="Name" style="margin-bottom:6px">'
+      ).join('') + '</div>').join('') +
+    '</div>' +
+    '<div style="margin-top:14px"><button id="start">Start game</button></div>' +
+  '</div>' + refCard();
+
+  $('#mode').onchange = e => renderSetup(e.target.value);
+  app.onclick = e => {
+    const drop = e.target.dataset.drop;
+    if (drop !== undefined) return dropGame(+drop, e.target);   // before open: the x sits inside the row
+    const open = e.target.closest('[data-open]');
+    if (open){
+      S = games.splice(+open.dataset.open, 1)[0];
+      games.unshift(S); draft = []; save(); render();
+    }
+  };
+  $('#start').onclick = () => {
+    const teams = sides.map((_,i) => {
+      const names = [].slice.call(document.querySelectorAll('.pname[data-side="'+i+'"]'))
+        .map(x => x.value.trim()).filter(Boolean);
+      return names.length ? names.join(' & ')
+                          : (mode==='2v2' ? 'Team '+(i+1) : 'Player '+(i+1));
+    });
+    S = {mode: mode, teams: teams, target: +$('#target').value || TARGET_DEFAULT, rounds: []};
+    games.unshift(S); draft = []; save(); render();
+  };
+}
+
+// Deleting a game is the one destructive act left, so it arms on first click.
+let dropArm = null;
+function dropGame(i, btn){
+  if (dropArm !== i){
+    dropArm = i; btn.textContent = 'delete?'; btn.style.color = 'var(--red)';
+    setTimeout(() => {
+      if (dropArm !== i) return;
+      dropArm = null;
+      if (document.contains(btn)){ btn.textContent = 'x'; btn.style.color = ''; }
+    }, 4000);
+    return;
+  }
+  dropArm = null;
+  games.splice(i,1); save(); renderSetup();
+}
+
+/* ---------- game ---------- */
+let draft = [];
+
+function render(){
+  if (!S) return renderSetup();
+  if (draft.length !== S.teams.length) draft = S.teams.map(() => Object.assign({}, BLANK));
+
+  const tot = totals();
+  const best = Math.max.apply(null, tot);
+  const won = isDone(S, tot);
+  const up = leaders(S, tot);
+
+  app.innerHTML =
+    (won ? '<div class="win">' +
+      (up.length > 1 ? up.map(esc).join(' &amp; ') + ' tie at ' + money(best)
+                     : esc(up[0]) + ' wins - ' + money(best)) +
+      (S.called ? '<span class="called">called early</span>' : '') + '</div>' : '') +
+    '<div class="board">' + S.teams.map((n,i) =>
+      '<div class="t ' + (tot[i]===best?'lead ':'') + (tot[i]<0?'down':'') + '">' +
+        '<div class="name">' + esc(n) + '</div>' +
+        '<div class="score">' + money(tot[i]) + '</div>' +
+        '<div class="meld"><b>' + meldMin(tot[i]) + '</b> to go down</div>' +
+        '<div class="bar"><i style="width:' +
+          Math.max(0, Math.min(100, tot[i]/S.target*100)) + '%"></i>' + tickMarks() + '</div>' +
+      '</div>').join('') + '</div>' +
+
+    '<h2>Round ' + (S.rounds.length + 1) + '</h2>' +
+    '<div class="grid">' + S.teams.map(entryCard).join('') + '</div>' +
+    '<div class="row" style="margin-top:4px">' +
+      '<button id="add" style="flex:0 0 auto">Save round</button>' +
+      '<button class="ghost" id="clear" style="flex:0 0 auto">Clear</button>' +
+      '<button class="ghost" id="call" style="flex:0 0 auto">' +
+        (S.called ? 'Reopen game' : 'Call game') + '</button>' +
+    '</div>' +
+    (S.rounds.length ? history(tot) : '') +
+    refCard();
+
+  wire();
+}
+
+function entryCard(name, i){
+  const d = draft[i];
+  const num = (f,label,note) =>
+    '<div class="f"><label>' + label + ' <em>' + note + '</em></label>' +
+    '<input type="number" data-t="' + i + '" data-f="' + f + '" value="' + d[f] + '" min="0" step="1"></div>';
+  return '<div class="card">' +
+    '<div style="font-weight:600;margin-bottom:10px">' + esc(name) + '</div>' +
+    num('natural','Natural canastas','x' + SCORE.natural) +
+    num('dirty','Dirty canastas','x' + SCORE.dirty) +
+    num('wild','Wild canastas','x' + SCORE.wild) +
+    num('red3','Red 3s','x' + SCORE.red3 + ', doubled at ' + SCORE.red3DoubleAt + '+') +
+    '<div class="sub">Card points</div>' +
+    num('meld','Melded on table','+') + counter(i,'meld') +
+    num('hand','Left in hand','-') + counter(i,'hand') +
+    '<label class="chk"><input type="checkbox" data-t="' + i + '" data-f="wentOut" ' +
+      (d.wentOut?'checked':'') + '>Went out <em>+' + SCORE.goOut + '</em></label>' +
+    '<label class="chk"><input type="checkbox" data-t="' + i + '" data-f="perfectCut" ' +
+      (d.perfectCut?'checked':'') + '>Perfect cut <em>+' + SCORE.perfectCut + '</em></label>' +
+    '<div class="rt"><span>Round</span><span class="v" id="rt' + i + '">' +
+      money(scoreTeam(d)) + '</span></div>' +
+  '</div>';
+}
+
+const counter = (i,f) =>
+  '<details class="counter"><summary>count it out</summary>' +
+    '<div class="cgrid" data-count="' + i + '-' + f + '">' +
+      CARD_VALUES.map(c => '<div><input type="number" min="0" placeholder="0" data-v="' + c.v + '">' +
+        '<label>' + c.short + '<br>' + c.v + '</label></div>').join('') +
+    '</div></details>';
+
+function history(tot){
+  const run = S.teams.map(() => 0);
+  return '<h2>Rounds</h2><div class="card" style="overflow-x:auto"><table>' +
+    '<thead><tr><th>#</th>' + S.teams.map(n => '<th>' + esc(n) + '</th>').join('') + '<th></th></tr></thead>' +
+    '<tbody>' + S.rounds.map((r,ri) =>
+      '<tr><td>' + (ri+1) + '</td>' +
+      r.map((t,i) => {
+        const v = scoreTeam(t); run[i] += v;
+        return '<td><span class="' + (v<0?'neg':'') + '">' + money(v) + '</span>' +
+          '<div style="font-size:11px;color:var(--dim)">' + money(run[i]) + '</div></td>';
+      }).join('') +
+      '<td><button class="ghost tiny" data-del="' + ri + '">x</button></td></tr>').join('') +
+    '</tbody><tfoot><tr><td>Total</td>' +
+      tot.map(v => '<td>' + money(v) + '</td>').join('') + '<td></td></tr></tfoot>' +
+  '</table></div>';
+}
+
+const chips = pairs => '<div class="chips">' +
+  pairs.map(p => '<i>' + p[0] + ' <b>' + p[1] + '</b></i>').join('') + '</div>';
+
+const refCard = () =>
+  '<h2>House rules <a class="full" href="rules.html">full rules</a></h2><div class="card">' +
+  '<div class="grp">Card values</div>' +
+  chips(CARD_VALUES.map(c => [c.short === '4-8' ? '4-8, blk 3' : c.short, c.v])) +
+  '<div class="grp">Canastas</div>' +
+  chips([['Natural',SCORE.natural],['Dirty',SCORE.dirty],['Wild',money(SCORE.wild)]]) +
+  '<div class="grp">Bonuses</div>' +
+  chips([['Red 3',SCORE.red3],[SCORE.red3DoubleAt + '+ red 3s','x2'],['No canasta','negative'],
+         ['Going out',SCORE.goOut],['Perfect cut',SCORE.perfectCut]]) +
+  '<div class="grp">Minimum to go down</div>' +
+  '<div class="lad">' + meldLadder().map(s =>
+      '<div><b>' + s.need + '</b><span>' + s.at + '</span></div>').join('') + '</div>' +
+  '<div class="grp">Game</div>' +
+  chips([['Wild','2s &amp; Jokers'],['First to', money(S ? S.target : TARGET_DEFAULT)]]) +
+  '</div>';
+
+/* ---------- events ---------- */
+function wire(){
+  app.oninput = e => {
+    const el = e.target;
+    if (el.dataset.v !== undefined){                 // "count it out" helper
+      const box = el.closest('[data-count]');
+      const parts = box.dataset.count.split('-');
+      const i = parts[0], f = parts[1];
+      const sum = [].slice.call(box.querySelectorAll('input'))
+        .reduce((s,x) => s + (+x.value||0) * +x.dataset.v, 0);
+      draft[i][f] = sum;
+      app.querySelector('input[data-t="'+i+'"][data-f="'+f+'"]').value = sum;
+      return refreshTotals();
+    }
+    if (el.dataset.f){
+      draft[el.dataset.t][el.dataset.f] = Math.max(0, +el.value || 0);
+      refreshTotals();
+    }
+  };
+  app.onchange = e => {
+    const el = e.target;
+    if (el.type !== 'checkbox') return;
+    const f = el.dataset.f;
+    if (el.checked)   // only one side can go out / cut the deck in a round
+      app.querySelectorAll('input[type=checkbox][data-f="'+f+'"]').forEach(o => {
+        if (o !== el){ o.checked = false; draft[o.dataset.t][f] = false; }
+      });
+    draft[el.dataset.t][f] = el.checked;
+    refreshTotals();
+  };
+  app.onclick = e => {
+    const del = e.target.dataset.del;
+    if (del !== undefined){ S.rounds.splice(+del,1); save(); render(); }
+  };
+  $('#add').onclick = () => {
+    S.rounds.push(draft.map(d => Object.assign({}, d)));
+    draft = S.teams.map(() => Object.assign({}, BLANK));
+    save(); render(); scrollTo({top:0, behavior:'smooth'});
+  };
+  $('#clear').onclick = () => { draft = S.teams.map(() => Object.assign({}, BLANK)); render(); };
+  $('#call').onclick = () => { S.called = !S.called; save(); render(); scrollTo({top:0,behavior:'smooth'}); };
+}
+
+const refreshTotals = () => draft.forEach((d,i) => {
+  const v = scoreTeam(d), el = $('#rt'+i);
+  el.textContent = money(v);
+  el.className = 'v ' + (v<0 ? 'neg' : v>0 ? 'pos' : '');
+});
+
+// Non-destructive now: the running game stays in `games`, so this just steps back
+// to the list. Nothing to confirm.
+$('#reset').onclick = () => { S = null; draft = []; renderSetup(); };
+
+/* ---------- self check: open index.html?test and watch the console ---------- */
+if (location.search.indexOf('test') > -1){
+  const t = o => scoreTeam(Object.assign({}, BLANK, o));
+  [[t({natural:1}),500], [t({dirty:2}),500], [t({wild:1}),2000],
+   [t({red3:2,natural:1}),700], [t({red3:2}),-200],
+   [t({red3:4,natural:1}),1300], [t({red3:4}),-800],
+   [t({red3:3,dirty:1}),550],
+   [t({meld:145,hand:30,natural:1,wentOut:true}),715],
+   [t({perfectCut:true,wentOut:true}),200],
+   [meldMin(0),50], [meldMin(-5),15], [meldMin(1499),50], [meldMin(1500),90],
+   [meldMin(2999),90], [meldMin(3000),120],
+   [meldMin(4499),120], [meldMin(4500),150], [meldMin(99999),150]
+  ].forEach((c,i) => console.assert(c[0]===c[1], 'case '+i+': got '+c[0]+', want '+c[1]));
+
+  // v1 stored one bare game, v2 stores an array - loadGames must cope with both
+  const oldFmt = {mode:'2v2',teams:['A','B'],target:10000,rounds:[]};
+  const probe = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){ return null; }
+                       return loadGames(); };
+  const keep = localStorage.getItem(KEY);
+  const m1 = probe(oldFmt), m2 = probe([oldFmt,oldFmt]), m3 = probe(null);
+  if (m1) {
+    console.assert(m1.length===1 && m1[0].teams[0]==='A', 'migrate: bare game should wrap to [game]');
+    console.assert(m2.length===2, 'migrate: array should pass through');
+    console.assert(m3.length===0, 'migrate: empty storage should give []');
+  }
+  try { keep === null ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, keep); } catch(e){}
+  console.log('self check complete');
+}
+
+render();
+</script>
+</body>
+</html>
