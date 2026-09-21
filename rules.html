@@ -93,7 +93,13 @@
     <tbody></tbody>
   </table>
   <p>The wild canasta is seven wild cards rather than seven of a rank. It is the
-  big one, it is a house rule, and most canasta variants do not allow it at all.</p>
+  big one, it is a house rule, and most canasta variants do not allow it at all.
+  It counts as a canasta everywhere else too &mdash; toward the
+  <b class="n" id="mcgo"></b> you need to go out, and for keeping your red 3s
+  on the right side of the ledger.</p>
+  <p>In partnerships every meld belongs to the <b>side</b>, not the player:
+  either partner can extend any of them, and once one partner has gone down the
+  side's minimum is satisfied for both.</p>
   <div class="callout">
     <p><b>Booking one:</b> square the canasta up and put a <b>red</b> card on
     top if it is natural, a <b>black</b> one if it is dirty. Anyone can then
@@ -144,6 +150,10 @@
     <tbody></tbody>
   </table>
   <p class="dim">A side that has gone negative needs the lowest minimum of all.</p>
+  <p>You can go down by taking the discard pile, but the minimum has to come out
+  of the meld you build with the top card &mdash; your two naturals plus it.
+  Melding other cards the same turn is fine; they do not count toward the
+  minimum, and neither does anything you pick up from under the top card.</p>
 
   <h2>Taking the discard pile</h2>
   <p>Two ways in, and either one gets you the whole pile. Both of them put the
@@ -158,33 +168,43 @@
       play it on.</li>
   </ul>
   <p>Whatever is underneath the top card goes into your hand.</p>
-  <p class="dim">Two things stop you: a black 3 sitting on top, and a frozen
-  pile, which closes off the second route entirely. Both are below.</p>
+  <p class="dim">Two things stop you: a black 3 on top, which blocks the player
+  immediately after it, and a frozen pile, which closes off the second route
+  entirely. Both are below.</p>
 
   <h2>Freezing the pile</h2>
   <p>Discarding a wild card or a red 3 freezes the pile. While it is frozen
   there is only one way in &mdash; two naturals from your hand. Extending a meld
   you already have down will not get you a frozen pile.</p>
+  <p>It stays frozen until somebody takes it. Ordinary discards just pile on top;
+  they do not thaw it.</p>
 
   <h2>Red 3s</h2>
   <p>Red 3s are bonus cards &mdash; they are never melded into a rank like
-  everything else, they just get laid down in front of you and count. Each is
-  worth <b class="n" id="r3"></b>, and at <b class="n" id="r3d"></b> or more
-  the whole lot doubles. Discarding one freezes the pile.</p>
-  <p>Get one down and it works for you. Be caught still holding it when the
-  round ends and it is worth only <b class="n" id="r3hand"></b> &mdash; against
-  you, like any other card in your hand.</p>
+  everything else, they just get laid down in front of you and count. There are
+  <b class="n" id="r3n"></b> of them in the shoe, two per deck.</p>
+  <p>Putting one down is up to you: hold it as long as you like and place it on
+  your turn whenever you want, and you <b>draw a replacement card</b> when you
+  do. Holding one is what lets you discard it, which freezes the pile.</p>
+  <p>Each is worth <b class="n" id="r3"></b>. If your <b>side</b> has
+  <b class="n" id="r3d"></b> or more <i>on the table</i>, the whole lot doubles
+  &mdash; one caught in your hand is worth
+  <b class="n" id="r3hand"></b> against you and does not count toward the
+  <b class="n" id="r3d2"></b>.</p>
   <div class="warn">
     <p><b>The catch:</b> if your side finishes the round without a single
-    canasta, your red 3s count <b>against</b> you instead &mdash; at the same
-    value, doubling included. Four red 3s and no canasta is
+    canasta, the red 3s you have down count <b>against</b> you instead &mdash;
+    at the same value, doubling included. All
+    <b class="n" id="r3n2"></b> down and no canasta is
     <b class="n" id="r3worst"></b>.</p>
   </div>
 
   <h2>Black 3s</h2>
   <p>Black 3s are worth <b class="n" id="b3"></b>. They are the safe discard:
-  a black 3 on top stops the next player taking the pile. Almost always they
-  show up as points against you, sitting in your hand when the round ends.</p>
+  a black 3 on top stops the player immediately after you from taking the pile.
+  It blocks that one player only &mdash; once they discard on top of it, the
+  pile is open again. Almost always black 3s show up as points against you,
+  sitting in your hand when the round ends.</p>
   <p>There is one exception, and it is the only time a black 3 is ever
   melded: if you are holding <b class="n" id="b3out"></b> of them, you can
   play them down as a set to go out. Going out that way, you
@@ -248,7 +268,11 @@ rows('bonuses', [
 
 el('r3').textContent  = SCORE.red3;
 el('r3d').textContent = SCORE.red3DoubleAt;
-el('r3worst').textContent = '-' + money(SCORE.red3DoubleAt * SCORE.red3 * 2);
+el('r3worst').textContent = '-' + money(DEAL.red3s * SCORE.red3 * 2);
+el('r3n').textContent    = DEAL.red3s;
+el('r3n2').textContent   = DEAL.red3s;
+el('r3d2').textContent   = SCORE.red3DoubleAt;
+el('mcgo').textContent   = DEAL.canastasToGoOut;
 el('b3').textContent  = SCORE.blackThree;
 el('target').textContent = money(TARGET_DEFAULT);
 el('dkcards').textContent = money(DEAL.cards);

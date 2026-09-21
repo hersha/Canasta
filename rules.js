@@ -38,6 +38,7 @@ const DEAL = {
   blackThreesToGoOut: 3   // the only time a black 3 is ever melded
 };
 DEAL.cards = DEAL.decks * 52 + DEAL.jokers;
+DEAL.red3s = DEAL.decks * 2;   // two red 3s per deck
 
 const money = n => (n<0?'-':'') + Math.abs(n).toLocaleString();
 
