@@ -84,6 +84,7 @@
   .cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
   .cgrid label{font-size:11px;text-align:center}
   .cgrid input{padding:6px 4px;text-align:center}
+  .hint{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.35}
   table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
   th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--line);font-size:14px}
   th:first-child,td:first-child{text-align:left;color:var(--dim)}
@@ -314,12 +315,19 @@ function entryCard(name, i){
   '</div>';
 }
 
+// The 3s have no box of their own - they share a value with an existing one.
+// Only the hand tally needs saying, since neither 3 is ever melded.
+const THREES = 'black 3s go in the ' + CARD_VALUES[0].v +
+               ', a red 3 caught in hand in the ' + SCORE.red3InHand;
+
 const counter = (i,f) =>
   '<details class="counter"><summary>count it out</summary>' +
     '<div class="cgrid" data-count="' + i + '-' + f + '">' +
       CARD_VALUES.map(c => '<div><input type="number" min="0" placeholder="0" data-v="' + c.v + '">' +
         '<label>' + c.short + '<br>' + c.v + '</label></div>').join('') +
-    '</div></details>';
+    '</div>' +
+    (f === 'hand' ? '<div class="hint">' + THREES + '</div>' : '') +
+  '</details>';
 
 function history(tot){
   const run = S.teams.map(() => 0);
