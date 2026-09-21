@@ -9,14 +9,15 @@ const SCORE = {
   red3: 100,         // each, and see red3DoubleAt
   red3DoubleAt: 4,   // hold this many red 3s and the whole lot doubles
   red3InHand: 20,    // one you never got down, caught in hand at the end
+  blackThree: 5,     // its own constant: it only HAPPENS to match the 4-8 value
   goOut: 100,
   perfectCut: 100
 };
 
 // short = the cramped tally boxes in the scorer, long = prose
 const CARD_VALUES = [
-  {short:'4-8',        long:'4 through 8',               v:5},
-  {short:'9-K',        long:'9 through King',            v:10},
+  {short:'4-7',        long:'4 through 7',               v:5},
+  {short:'8-K',        long:'8 through King',            v:10},
   {short:'2s &amp; A', long:'2s and Aces',               v:20},
   {short:'Jokers',     long:'Jokers',                    v:50}
 ];

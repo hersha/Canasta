@@ -66,13 +66,12 @@
 </header>
 <main>
   <p class="lede">How we play it. These are house rules and differ from the
-  standard game in a few places &mdash; the wild canasta especially. The scorer
-  uses exactly the numbers on this page.</p>
+  standard game in a few places &mdash; the wild canasta especially.</p>
 
   <h2>The deal</h2>
-  <p>Three decks shuffled together with six jokers &mdash;
-  <b class="n" id="dkcards"></b> cards in all. Each player is dealt
-  <b class="n" id="dkhand"></b>.</p>
+  <p>Played head to head, three ways, or in partnerships. Three decks shuffled
+  together with six jokers &mdash; <b class="n" id="dkcards"></b> cards in all.
+  Each player is dealt <b class="n" id="dkhand"></b>.</p>
   <p>Cutting the deck to exactly the right number of cards to deal, on the nose,
   is worth <b class="n" id="dkcut"></b> to whoever cut it.</p>
 
@@ -80,6 +79,26 @@
   <p>Draw <b class="n" id="dkdraw"></b> from the stock, meld whatever you want
   to meld, then discard one card to finish. Instead of drawing from the stock
   you can try to take the discard pile &mdash; see below for what that takes.</p>
+
+  <h2>Melds and canastas</h2>
+  <p>A <b>meld</b> is a set of cards of the same rank, laid face up in front of
+  your side. <b>Natural</b> means any card that is not wild. Getting your side's
+  first meld of a round onto the table is <b>going down</b>; playing away the
+  last of your hand is <b>going out</b>. They are different things and the page
+  uses both.</p>
+  <p>A meld of seven cards is a <b>canasta</b>. What it pays depends on how
+  clean it is:</p>
+  <table id="canastas">
+    <thead><tr><th>Canasta</th><th>Bonus</th></tr></thead>
+    <tbody></tbody>
+  </table>
+  <p>The wild canasta is seven wild cards rather than seven of a rank. It is the
+  big one, it is a house rule, and most canasta variants do not allow it at all.</p>
+  <div class="callout">
+    <p><b>Booking one:</b> square the canasta up and put a <b>red</b> card on
+    top if it is natural, a <b>black</b> one if it is dirty. Anyone can then
+    read the table at a glance.</p>
+  </div>
 
   <h2>Wild cards</h2>
   <p>Twos and Jokers are wild. A wild card stands in for any rank &mdash; three
@@ -93,7 +112,7 @@
     <li>They are the dearest cards to be caught holding. A 2 is
       <b class="n" id="w2"></b> against you in hand, a Joker
       <b class="n" id="wjk"></b>.</li>
-    <li>Any canasta with a wild in it is <b>dirty</b> &mdash;
+    <li>Any canasta <i>of a rank</i> with a wild in it is <b>dirty</b> &mdash;
       <b class="n" id="wdirty"></b> instead of the
       <b class="n" id="wnat"></b> a natural one pays. One wild is all it takes
       to cost you <b class="n" id="wgap"></b>.</li>
@@ -101,8 +120,8 @@
       <b class="n" id="wwild"></b>, the biggest single score on the board, and
       worth four natural canastas.</li>
   </ul>
-  <p>Discarding one freezes the pile, so a wild is also the cheapest way to
-  shut the pile down when someone is circling it.</p>
+  <p>Discarding one freezes the pile. It is a dear card to throw away, but
+  sometimes worth it to shut the pile down on someone who is circling it.</p>
 
   <h2>What the cards are worth</h2>
   <p>These are the card points you count up at the end of a round: everything
@@ -112,13 +131,16 @@
     <thead><tr><th>Card</th><th>Points</th></tr></thead>
     <tbody></tbody>
   </table>
+  <p class="dim">The 3s only ever count against you here, with one exception
+  each &mdash; see Red 3s and Black 3s below. A red 3 laid down is a bonus card,
+  not a card point.</p>
 
   <h2>Going down</h2>
-  <p>Your first meld of a round has to be worth a minimum number of card points,
-  and that minimum rises as your score does. Where you sit right now decides what
-  you need:</p>
+  <p>Your side's first meld of a round has to be worth a minimum number of card
+  points, and that minimum rises as your score does. Where your side sits right
+  now decides what you need:</p>
   <table id="ladder">
-    <thead><tr><th>Your score</th><th>Minimum to go down</th></tr></thead>
+    <thead><tr><th>Your side's score</th><th>Minimum to go down</th></tr></thead>
     <tbody></tbody>
   </table>
   <p class="dim">A side that has gone negative needs the lowest minimum of all.</p>
@@ -136,20 +158,13 @@
       play it on.</li>
   </ul>
   <p>Whatever is underneath the top card goes into your hand.</p>
+  <p class="dim">Two things stop you: a black 3 sitting on top, and a frozen
+  pile, which closes off the second route entirely. Both are below.</p>
 
   <h2>Freezing the pile</h2>
   <p>Discarding a wild card or a red 3 freezes the pile. While it is frozen
   there is only one way in &mdash; two naturals from your hand. Extending a meld
   you already have down will not get you a frozen pile.</p>
-
-  <h2>Canastas</h2>
-  <p>Seven cards of a rank. What it is worth depends on how clean it is:</p>
-  <table id="canastas">
-    <thead><tr><th>Canasta</th><th>Bonus</th></tr></thead>
-    <tbody></tbody>
-  </table>
-  <p>The wild canasta &mdash; seven wild cards together &mdash; is the big one,
-  and is a house rule; most canasta variants do not allow it at all.</p>
 
   <h2>Red 3s</h2>
   <p>Red 3s are bonus cards &mdash; they are never melded into a rank like
@@ -172,29 +187,29 @@
   show up as points against you, sitting in your hand when the round ends.</p>
   <p>There is one exception, and it is the only time a black 3 is ever
   melded: if you are holding <b class="n" id="b3out"></b> of them, you can
-  play them down as a set to go out. Go out that way and you get
-  <b>no discard</b> &mdash; the black 3s are the last of your hand. On the
+  play them down as a set to go out. Going out that way, you
+  <b>do not discard</b> &mdash; the black 3s are the last of your hand. On the
   table they count for you, <b class="n" id="b3each"></b> apiece, rather than
   against you.</p>
 
   <h2>Going out</h2>
-  <p>Your side needs <b class="n" id="gocan"></b> canastas down before anyone
-  can go out. Going out ends the round for everybody, and everything still in
-  the other hands counts against them.</p>
+  <p>Your side needs <b class="n" id="gocan"></b> canastas down before you can
+  go out. Going out ends the round for everybody, and everything still in the
+  other hands counts against them.</p>
   <div class="callout">
     <p><b>&ldquo;Shall I?&rdquo;</b> &mdash; going out is the only time you may
     ask your partner anything, and that is the only question you may ask. It is
     the whole of the table talk this game allows: no other questions, hints or
     signals, ever.</p>
   </div>
+  <h2>Bonuses</h2>
   <table id="bonuses">
     <thead><tr><th>Bonus</th><th>Points</th></tr></thead>
     <tbody></tbody>
   </table>
 
   <h2>Winning</h2>
-  <p>First side to <b class="n" id="target"></b> takes it. You can play
-  head to head, three ways, or in partnerships.</p>
+  <p>First side to <b class="n" id="target"></b> takes it.</p>
 
   <h2>A round, counted up</h2>
   <p>Say your side finished a round with two natural canastas, one dirty
@@ -203,6 +218,8 @@
   <div class="box">
     <table class="calc"><tbody id="example"></tbody></table>
   </div>
+  <p class="dim">The melded card points include the cards inside the canastas
+  &mdash; the canasta bonus is on top of them, not instead of them.</p>
 
 </main>
 <footer>The scorer and this page read the same numbers, so they cannot disagree.</footer>
@@ -215,7 +232,7 @@ const rows = (id, data) => el(id).innerHTML = data.map(r =>
   '</td><td><b>' + r[1] + '</b></td></tr>').join('');
 
 rows('cards', CARD_VALUES.map(c => [c.long, c.v]).concat([
-  ['Black 3 &mdash; never melded',    '-' + CARD_VALUES[0].v,  'minus'],
+  ['Black 3 &mdash; left in hand',    '-' + SCORE.blackThree,  'minus'],
   ['Red 3 &mdash; caught in hand',    '-' + SCORE.red3InHand,  'minus']
 ]));
 rows('ladder', meldLadder().map(s => [s.at, s.need]));
@@ -232,7 +249,7 @@ rows('bonuses', [
 el('r3').textContent  = SCORE.red3;
 el('r3d').textContent = SCORE.red3DoubleAt;
 el('r3worst').textContent = '-' + money(SCORE.red3DoubleAt * SCORE.red3 * 2);
-el('b3').textContent  = CARD_VALUES[0].v;
+el('b3').textContent  = SCORE.blackThree;
 el('target').textContent = money(TARGET_DEFAULT);
 el('dkcards').textContent = money(DEAL.cards);
 el('dkhand').textContent  = DEAL.hand;
@@ -240,7 +257,7 @@ el('dkcut').textContent   = SCORE.perfectCut;
 el('dkdraw').textContent  = DEAL.draw + (DEAL.draw === 1 ? ' card' : ' cards');
 el('r3hand').textContent  = SCORE.red3InHand;
 el('b3out').textContent   = DEAL.blackThreesToGoOut;
-el('b3each').textContent  = CARD_VALUES[0].v;
+el('b3each').textContent  = SCORE.blackThree;
 
 const cardVal = short => (CARD_VALUES.find(c => c.short === short) || {}).v;
 el('w2').textContent     = cardVal('2s &amp; A');

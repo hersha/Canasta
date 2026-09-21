@@ -319,7 +319,7 @@ function entryCard(name, i){
 
 // The 3s have no box of their own - they share a value with an existing one.
 // Only the hand tally needs saying, since neither 3 is ever melded.
-const THREES = 'black 3s go in the ' + CARD_VALUES[0].v +
+const THREES = 'black 3s go in the ' + SCORE.blackThree +
                ', a red 3 caught in hand in the ' + SCORE.red3InHand;
 
 const counter = (i,f) =>
@@ -357,7 +357,7 @@ const refCard = () =>
   '<h2>House rules <a class="full" href="rules.html">full rules</a></h2><div class="card">' +
   '<div class="grp">Card values</div>' +
   chips(CARD_VALUES.map(c => [c.short, c.v]).concat([
-    ['blk 3', '-' + CARD_VALUES[0].v, 'minus'],
+    ['blk 3', '-' + SCORE.blackThree, 'minus'],
     ['red 3 in hand', '-' + SCORE.red3InHand, 'minus']
   ])) +
   '<div class="hint">3s count against you, not for you &mdash; the one exception is ' +
