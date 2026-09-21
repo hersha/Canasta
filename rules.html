@@ -81,7 +81,23 @@
   you can try to take the discard pile &mdash; see below for what that takes.</p>
 
   <h2>Wild cards</h2>
-  <p>Twos and Jokers are wild.</p>
+  <p>Twos and Jokers are wild. A wild card stands in for any rank &mdash; three
+  9s and a wild is four 9s, and the wild counts as the fourth 9.</p>
+  <p>They are the most double-edged cards in the deck:</p>
+  <ul>
+    <li>They are the dearest cards to be caught holding. A 2 is
+      <b class="n" id="w2"></b> against you in hand, a Joker
+      <b class="n" id="wjk"></b>.</li>
+    <li>Any canasta with a wild in it is <b>dirty</b> &mdash;
+      <b class="n" id="wdirty"></b> instead of the
+      <b class="n" id="wnat"></b> a natural one pays. Every wild you lean on
+      halves what the canasta is worth.</li>
+    <li>But seven wilds together is a <b>wild canasta</b>:
+      <b class="n" id="wwild"></b>, the biggest single score on the board, and
+      worth four natural canastas.</li>
+  </ul>
+  <p>Discarding one freezes the pile, so a wild is also the cheapest way to
+  shut the pile down when someone is circling it.</p>
 
   <h2>What the cards are worth</h2>
   <p>These are the card points you count up at the end of a round: everything
@@ -207,6 +223,13 @@ el('dkdraw').textContent  = DEAL.draw + (DEAL.draw === 1 ? ' card' : ' cards');
 el('r3hand').textContent  = SCORE.red3InHand;
 el('b3out').textContent   = DEAL.blackThreesToGoOut;
 el('b3each').textContent  = CARD_VALUES[0].v;
+
+const cardVal = short => (CARD_VALUES.find(c => c.short === short) || {}).v;
+el('w2').textContent     = cardVal('2s &amp; A');
+el('wjk').textContent    = cardVal('Jokers');
+el('wdirty').textContent = money(SCORE.dirty);
+el('wnat').textContent   = money(SCORE.natural);
+el('wwild').textContent  = money(SCORE.wild);
 el('gocan').textContent   = DEAL.canastasToGoOut;
 
 // worked example, arithmetic done from the same constants rather than typed out
