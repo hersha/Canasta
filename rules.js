@@ -4,7 +4,7 @@
 
 const SCORE = {
   natural: 500,      // canasta of naturals only
-  dirty: 250,        // canasta containing wilds
+  dirty: 300,        // canasta containing wilds
   wild: 2000,        // canasta of all wilds
   red3: 100,         // each, and see red3DoubleAt
   red3DoubleAt: 4,   // hold this many red 3s and the whole lot doubles

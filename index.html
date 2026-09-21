@@ -431,10 +431,10 @@ $('#reset').onclick = () => { S = null; draft = []; renderSetup(); };
 /* ---------- self check: open index.html?test and watch the console ---------- */
 if (location.search.indexOf('test') > -1){
   const t = o => scoreTeam(Object.assign({}, BLANK, o));
-  [[t({natural:1}),500], [t({dirty:2}),500], [t({wild:1}),2000],
+  [[t({natural:1}),500], [t({dirty:2}),600], [t({wild:1}),2000],
    [t({red3:2,natural:1}),700], [t({red3:2}),-200],
    [t({red3:4,natural:1}),1300], [t({red3:4}),-800],
-   [t({red3:3,dirty:1}),550],
+   [t({red3:3,dirty:1}),600],
    [t({meld:145,hand:30,natural:1,wentOut:true}),715],
    [t({perfectCut:true,wentOut:true}),200],
    [meldMin(0),50], [meldMin(-5),15], [meldMin(1499),50], [meldMin(1500),90],
