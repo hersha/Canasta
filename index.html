@@ -360,7 +360,8 @@ const refCard = () =>
     ['blk 3', '-' + CARD_VALUES[0].v, 'minus'],
     ['red 3 in hand', '-' + SCORE.red3InHand, 'minus']
   ])) +
-  '<div class="hint">3s are never melded &mdash; they only ever count against you</div>' +
+  '<div class="hint">3s count against you, not for you &mdash; the one exception is ' +
+    DEAL.blackThreesToGoOut + ' black 3s melded to go out (no discard)</div>' +
   '<div class="grp">Canastas</div>' +
   chips([['Natural',SCORE.natural],['Dirty',SCORE.dirty],['Wild',money(SCORE.wild)]]) +
   '<div class="grp">Bonuses</div>' +

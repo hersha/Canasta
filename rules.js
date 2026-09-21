@@ -33,7 +33,8 @@ const DEAL = {
   jokers: 6,
   hand: 17,          // cards dealt to each player
   draw: 2,           // cards drawn per turn (discard is always one)
-  canastasToGoOut: 2
+  canastasToGoOut: 2,
+  blackThreesToGoOut: 3   // the only time a black 3 is ever melded
 };
 DEAL.cards = DEAL.decks * 52 + DEAL.jokers;
 
