@@ -21,15 +21,21 @@
     border:1px solid var(--line);border-radius:8px;padding:6px 12px}
   header a:hover{border-color:var(--gold)}
   main{max-width:860px;margin:0 auto;padding:18px 16px}
-  h3{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);
-    margin:28px 0 10px;display:flex;align-items:center;gap:12px}
-  h3:first-child{margin-top:0}
-  h3 button{background:var(--gold);color:#241a05;border:0;border-radius:7px;
-    padding:5px 12px;font:600 12px/1 inherit;font-family:inherit;cursor:pointer;
-    letter-spacing:0;text-transform:none}
-  h3 button:hover{filter:brightness(1.1)}
-  h3 em{font-style:normal;color:var(--dim);text-transform:none;letter-spacing:0;
-    font-size:12px;font-weight:400}
+  .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:none;border:0;color:var(--dim);padding:7px 14px;
+    font:13px/1 inherit;font-family:inherit;cursor:pointer}
+  .seg button+button{border-left:1px solid var(--line)}
+  .seg button.on{background:var(--gold);color:#241a05;font-weight:600}
+  .seg button:not(.on):hover{color:var(--ink)}
+  #print{background:var(--gold);color:#241a05;border:0;border-radius:8px;
+    padding:8px 14px;font:600 13px/1 inherit;font-family:inherit;cursor:pointer}
+  #print:hover{filter:brightness(1.1)}
+  .cap{font-style:normal;color:var(--dim);font-size:13px}
+
+  /* One switch drives both the screen and the printout */
+  body.v-sheet .cardwrap,
+  body.v-card  .sheetwrap{display:none}
 
   /* ---------- full sheet ---------- */
   .sheet{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
@@ -74,13 +80,10 @@
   @media print{
     @page{margin:12mm}
     body{background:#fff;color:#000;padding:0}
-    header,.hint,h3{display:none}
+    header,.toolbar{display:none}
     main{max-width:none;padding:0}
     .stage{height:auto}
     .card{transform:none}
-    /* one button prints one thing: default is the sheet */
-    body:not(.p-card) .cardwrap{display:none}
-    body.p-card .sheetwrap{display:none}
 
     .sheet{gap:8px;grid-template-columns:1fr 1fr}
     .blk{background:#fff;border:1px solid #999;border-radius:0;padding:8px 10px}
@@ -110,9 +113,16 @@
   <a href="index.html">Scorer</a>
 </header>
 <main>
+  <div class="toolbar">
+    <div class="seg">
+      <button data-view="sheet">Full sheet</button>
+      <button data-view="card">Playing card</button>
+    </div>
+    <button id="print">Print</button>
+    <em class="cap"></em>
+  </div>
+
   <section class="sheetwrap">
-    <h3>Full sheet <button data-print="sheet">Print sheet</button>
-      <em>one page, for the table</em></h3>
     <div class="sheet">
       <div class="blk"><h4>Card values</h4><div id="s-cards"></div>
         <p class="note">3s are never melded and only count against you &mdash; the
@@ -128,8 +138,6 @@
   </section>
 
   <section class="cardwrap">
-    <h3>Playing card <button data-print="card">Print card</button>
-      <em>actual size, 2.5 &times; 3.5in &mdash; trim the dashed line</em></h3>
     <div class="stage">
       <div class="card">
         <h4>Canasta <small>house rules</small></h4>
@@ -211,13 +219,28 @@ el('c-game').innerHTML =
                v('to go out', DEAL.canastasToGoOut + ' canastas'),
                v('play to', money(TARGET_DEFAULT))]) + '</p>';
 
-/* Each button prints only its own layout; the class is off again straight
-   after, so a plain Ctrl+P still gets the sheet. */
-document.querySelectorAll('[data-print]').forEach(btn => btn.onclick = () => {
-  document.body.classList.toggle('p-card', btn.dataset.print === 'card');
-  window.print();
-  document.body.classList.remove('p-card');
-});
+/* The toggle sets a body class that hides the other layout in every medium,
+   so Print - and a plain Ctrl+P - gets whatever is on screen. */
+const CAPTION = {
+  sheet: 'One page, for the table.',
+  card:  'Actual size, 2.5 &times; 3.5in. Prints with a dashed cut line — trim it and it sits in the card box.'
+};
+
+function show(view){
+  document.body.className = 'v-' + view;
+  document.querySelectorAll('[data-view]').forEach(b =>
+    b.classList.toggle('on', b.dataset.view === view));
+  document.querySelector('.cap').innerHTML = CAPTION[view];
+  try { localStorage.setItem('canasta.ref', view); } catch (e) {}
+}
+
+document.querySelectorAll('[data-view]').forEach(b =>
+  b.onclick = () => show(b.dataset.view));
+el('print').onclick = () => window.print();
+
+let start = 'sheet';
+try { if (localStorage.getItem('canasta.ref') === 'card') start = 'card'; } catch (e) {}
+show(start);
 </script>
 </body>
 </html>
