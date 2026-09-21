@@ -41,6 +41,8 @@
   th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);font-weight:600}
   tbody tr:last-child td{border-bottom:0}
   td b{color:var(--gold)}
+  tr.minus td{color:var(--dim)}
+  tr.minus td b{color:var(--red)}
   .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;
     padding:4px 16px;margin:0 0 16px}
   .warn{border-left:3px solid var(--red);background:rgba(212,96,79,.07);
@@ -170,9 +172,13 @@
 <script>
 const el = id => document.getElementById(id);
 const rows = (id, data) => el(id).innerHTML = data.map(r =>
-  '<tr><td>' + r[0] + '</td><td><b>' + r[1] + '</b></td></tr>').join('');
+  '<tr' + (r[2] ? ' class="' + r[2] + '"' : '') + '><td>' + r[0] +
+  '</td><td><b>' + r[1] + '</b></td></tr>').join('');
 
-rows('cards', CARD_VALUES.map(c => [c.long, c.v]));
+rows('cards', CARD_VALUES.map(c => [c.long, c.v]).concat([
+  ['Black 3 &mdash; never melded',    '-' + CARD_VALUES[0].v,  'minus'],
+  ['Red 3 &mdash; caught in hand',    '-' + SCORE.red3InHand,  'minus']
+]));
 rows('ladder', meldLadder().map(s => [s.at, s.need]));
 rows('canastas', [
   ['Natural &mdash; no wilds in it', money(SCORE.natural)],

@@ -101,6 +101,8 @@
   .chips i{font-style:normal;background:var(--panel2);border-radius:99px;
     padding:5px 11px;font-size:13px;color:var(--dim)}
   .chips i b{color:var(--gold);font-variant-numeric:tabular-nums}
+  .chips i.minus{background:rgba(212,96,79,.13)}
+  .chips i.minus b{color:var(--red)}
   .lad{display:flex;gap:6px}
   .lad div{flex:1;text-align:center;background:var(--panel2);border-radius:8px;padding:8px 4px}
   .lad div b{display:block;font-size:17px;color:var(--gold);font-variant-numeric:tabular-nums}
@@ -346,18 +348,24 @@ function history(tot){
   '</table></div>';
 }
 
+// [label, value, optional class]
 const chips = pairs => '<div class="chips">' +
-  pairs.map(p => '<i>' + p[0] + ' <b>' + p[1] + '</b></i>').join('') + '</div>';
+  pairs.map(p => '<i' + (p[2] ? ' class="' + p[2] + '"' : '') + '>' +
+    p[0] + ' <b>' + p[1] + '</b></i>').join('') + '</div>';
 
 const refCard = () =>
   '<h2>House rules <a class="full" href="rules.html">full rules</a></h2><div class="card">' +
   '<div class="grp">Card values</div>' +
-  chips(CARD_VALUES.map(c => [c.short === '4-8' ? '4-8, blk 3' : c.short, c.v])) +
+  chips(CARD_VALUES.map(c => [c.short, c.v]).concat([
+    ['blk 3', '-' + CARD_VALUES[0].v, 'minus'],
+    ['red 3 in hand', '-' + SCORE.red3InHand, 'minus']
+  ])) +
+  '<div class="hint">3s are never melded &mdash; they only ever count against you</div>' +
   '<div class="grp">Canastas</div>' +
   chips([['Natural',SCORE.natural],['Dirty',SCORE.dirty],['Wild',money(SCORE.wild)]]) +
   '<div class="grp">Bonuses</div>' +
-  chips([['Red 3',SCORE.red3],[SCORE.red3DoubleAt + '+ red 3s','x2'],['No canasta','negative'],
-         ['Red 3 in hand',SCORE.red3InHand],
+  chips([['Red 3 down',SCORE.red3],[SCORE.red3DoubleAt + '+ red 3s','x2'],
+         ['No canasta','negative','minus'],
          ['Going out',SCORE.goOut],['Perfect cut',SCORE.perfectCut]]) +
   '<div class="grp">Minimum to go down</div>' +
   '<div class="lad">' + meldLadder().map(s =>

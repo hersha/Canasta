@@ -15,7 +15,7 @@ const SCORE = {
 
 // short = the cramped tally boxes in the scorer, long = prose
 const CARD_VALUES = [
-  {short:'4-8',        long:'4 through 8, and black 3s', v:5},
+  {short:'4-8',        long:'4 through 8',               v:5},
   {short:'9-K',        long:'9 through King',            v:10},
   {short:'2s &amp; A', long:'2s and Aces',               v:20},
   {short:'Jokers',     long:'Jokers',                    v:50}
