@@ -318,7 +318,7 @@ function entryCard(name, i){
     '<label class="chk"><input type="checkbox" data-t="' + i + '" data-f="wentOut" ' +
       (d.wentOut?'checked':'') + '>Went out <em>+' + SCORE.goOut + '</em></label>' +
     '<label class="chk"><input type="checkbox" data-t="' + i + '" data-f="perfectCut" ' +
-      (d.perfectCut?'checked':'') + '>Perfect cut <em>+' + SCORE.perfectCut + '</em></label>' +
+      (d.perfectCut?'checked':'') + '>Perfect deal <em>+' + SCORE.perfectCut + '</em></label>' +
     '<div class="rt"><span>Round</span><span class="v" id="rt' + i + '">' +
       money(scoreTeam(d)) + '</span></div>' +
   '</div>';
@@ -374,7 +374,7 @@ const refCard = () =>
   '<div class="grp">Bonuses</div>' +
   chips([['Red 3 down',SCORE.red3],[SCORE.red3DoubleAt + '+ red 3s','x2'],
          ['No canasta','negative','minus'],
-         ['Going out',SCORE.goOut],['Perfect cut',SCORE.perfectCut]]) +
+         ['Going out',SCORE.goOut],['Perfect deal',SCORE.perfectCut]]) +
   '<div class="grp">Minimum to go down</div>' +
   '<div class="lad">' + meldLadder().map(s =>
       '<div><b>' + s.need + '</b><span>' + s.at + '</span></div>').join('') + '</div>' +

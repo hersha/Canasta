@@ -78,9 +78,9 @@
   card is turned.</p>
   <p>Cut the deck dead on the number of cards the deal needs &mdash; no counting
   off, no adjusting &mdash; and your side takes <b class="n" id="dkcut"></b>
-  for it. The card for the discard pile counts as part of the deal, so being one
-  over is exactly right, and two over still stands if the first one froze the
-  pile.</p>
+  for it. The card that starts the discard pile is an optional extra: exact
+  counts, one over counts, and two over counts as well if the first one froze
+  the pile.</p>
 
   <h2>Your turn</h2>
   <p>Draw <b class="n" id="dkdraw"></b> from the stock, meld whatever you want
@@ -282,7 +282,7 @@ rows('canastas', [
 ]);
 rows('bonuses', [
   ['Going out',   '+' + SCORE.goOut],
-  ['Perfect cut', '+' + SCORE.perfectCut]
+  ['Perfect deal', '+' + SCORE.perfectCut]
 ]);
 
 el('r3').textContent  = SCORE.red3;

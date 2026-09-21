@@ -11,6 +11,8 @@ const SCORE = {
   red3InHand: 20,    // one you never got down, caught in hand at the end
   blackThree: 5,     // its own constant: it only HAPPENS to match the 4-8 value
   goOut: 100,
+  // shown as "perfect deal"; the key stays perfectCut because saved rounds
+  // in localStorage carry that field name
   perfectCut: 100
 };
 
