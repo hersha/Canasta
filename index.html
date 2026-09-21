@@ -349,6 +349,7 @@ const refCard = () =>
   chips([['Natural',SCORE.natural],['Dirty',SCORE.dirty],['Wild',money(SCORE.wild)]]) +
   '<div class="grp">Bonuses</div>' +
   chips([['Red 3',SCORE.red3],[SCORE.red3DoubleAt + '+ red 3s','x2'],['No canasta','negative'],
+         ['Red 3 in hand',SCORE.red3InHand],
          ['Going out',SCORE.goOut],['Perfect cut',SCORE.perfectCut]]) +
   '<div class="grp">Minimum to go down</div>' +
   '<div class="lad">' + meldLadder().map(s =>
@@ -421,7 +422,7 @@ if (location.search.indexOf('test') > -1){
    [t({perfectCut:true,wentOut:true}),200],
    [meldMin(0),50], [meldMin(-5),15], [meldMin(1499),50], [meldMin(1500),90],
    [meldMin(2999),90], [meldMin(3000),120],
-   [meldMin(4499),120], [meldMin(4500),150], [meldMin(99999),150]
+   [meldMin(6999),120], [meldMin(7000),150], [meldMin(99999),150]
   ].forEach((c,i) => console.assert(c[0]===c[1], 'case '+i+': got '+c[0]+', want '+c[1]));
 
   // v1 stored one bare game, v2 stores an array - loadGames must cope with both

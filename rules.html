@@ -123,9 +123,12 @@
 
   <h2>Red 3s</h2>
   <p>Red 3s are bonus cards &mdash; they are never melded into a rank like
-  everything else, they just count. Each is worth <b class="n" id="r3"></b>,
-  and at <b class="n" id="r3d"></b> or more the whole lot doubles. Discarding
-  one freezes the pile.</p>
+  everything else, they just get laid down in front of you and count. Each is
+  worth <b class="n" id="r3"></b>, and at <b class="n" id="r3d"></b> or more
+  the whole lot doubles. Discarding one freezes the pile.</p>
+  <p>Get one down and it works for you. Be caught still holding it when the
+  round ends and it is worth only <b class="n" id="r3hand"></b> &mdash; against
+  you, like any other card in your hand.</p>
   <div class="warn">
     <p><b>The catch:</b> if your side finishes the round without a single
     canasta, your red 3s count <b>against</b> you instead &mdash; at the same
@@ -190,6 +193,7 @@ el('dkcards').textContent = money(DEAL.cards);
 el('dkhand').textContent  = DEAL.hand;
 el('dkcut').textContent   = SCORE.perfectCut;
 el('dkdraw').textContent  = DEAL.draw + (DEAL.draw === 1 ? ' card' : ' cards');
+el('r3hand').textContent  = SCORE.red3InHand;
 el('gocan').textContent   = DEAL.canastasToGoOut;
 
 // worked example, arithmetic done from the same constants rather than typed out

@@ -8,6 +8,7 @@ const SCORE = {
   wild: 2000,        // canasta of all wilds
   red3: 100,         // each, and see red3DoubleAt
   red3DoubleAt: 4,   // hold this many red 3s and the whole lot doubles
+  red3InHand: 20,    // one you never got down, caught in hand at the end
   goOut: 100,
   perfectCut: 100
 };
@@ -20,10 +21,9 @@ const CARD_VALUES = [
   {short:'Jokers',     long:'Jokers',                    v:50}
 ];
 
-// EDIT ME: minimum meld to go down, by your current running score.
+// Minimum meld to go down, by your current running score.
 // [score at or above, points needed] - highest threshold first.
-// Placeholder = standard canasta tiers; only the opening 50 is confirmed house rule.
-const MELD_MIN = [[4500,150],[3000,120],[1500,90],[0,50],[-Infinity,15]];
+const MELD_MIN = [[7000,150],[3000,120],[1500,90],[0,50],[-Infinity,15]];
 const meldMin = score => MELD_MIN.find(r => score >= r[0])[1];
 
 const TARGET_DEFAULT = 10000;
