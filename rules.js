@@ -32,7 +32,7 @@ const DEAL = {
   decks: 3,
   jokers: 6,
   hand: 15,          // cards dealt to each player
-  draw: 1,           // cards drawn per turn
+  draw: 2,           // cards drawn per turn (discard is always one)
   canastasToGoOut: 2
 };
 DEAL.cards = DEAL.decks * 52 + DEAL.jokers;

@@ -74,9 +74,9 @@
   is worth <b class="n" id="dkcut"></b> to whoever cut it.</p>
 
   <h2>Your turn</h2>
-  <p>Draw one card from the stock, meld whatever you want to meld, then discard
-  one card to finish. Instead of drawing from the stock you can try to take the
-  discard pile &mdash; see below for what that takes.</p>
+  <p>Draw <b class="n" id="dkdraw"></b> from the stock, meld whatever you want
+  to meld, then discard one card to finish. Instead of drawing from the stock
+  you can try to take the discard pile &mdash; see below for what that takes.</p>
 
   <h2>Wild cards</h2>
   <p>Twos and Jokers are wild.</p>
@@ -189,6 +189,7 @@ el('target').textContent = money(TARGET_DEFAULT);
 el('dkcards').textContent = money(DEAL.cards);
 el('dkhand').textContent  = DEAL.hand;
 el('dkcut').textContent   = SCORE.perfectCut;
+el('dkdraw').textContent  = DEAL.draw + (DEAL.draw === 1 ? ' card' : ' cards');
 el('gocan').textContent   = DEAL.canastasToGoOut;
 
 // worked example, arithmetic done from the same constants rather than typed out
