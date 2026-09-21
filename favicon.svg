@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Felt-green tile, a tilted card, three red pips: a red 3, the card these
+       house rules make the most fuss about. Pips rather than a glyph so it
+       does not depend on a font being available. -->
+  <rect width="64" height="64" rx="14" fill="#0f1a14"/>
+  <g transform="rotate(-8 32 32)">
+    <rect x="19" y="10" width="26" height="44" rx="4"
+          fill="#e8f2ec" stroke="#e3b23c" stroke-width="1.5"/>
+    <g fill="#d4604f">
+      <path d="M32 17.5 l4 4.5 -4 4.5 -4 -4.5z"/>
+      <path d="M32 27.5 l4 4.5 -4 4.5 -4 -4.5z"/>
+      <path d="M32 37.5 l4 4.5 -4 4.5 -4 -4.5z"/>
+    </g>
+  </g>
+</svg>
