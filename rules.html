@@ -117,7 +117,7 @@
   standard game in a few places &mdash; the wild canasta especially.</p>
 
   <h2>The deal</h2>
-  <p>Played head to head, three ways, or in partnerships &mdash; partners
+  <p>Played head to head, three ways, or in partnerships, partners
   sitting across from each other. Three decks shuffled together with six jokers
   &mdash; <b class="n" id="dkcards"></b> cards in all. Each player is dealt
   <b class="n" id="dkhand"></b>.</p>
@@ -157,11 +157,10 @@
   <b class="n" id="mcgo"></b> canastas you need to go out, and for keeping your
   red 3s on the right side of the ledger.</p>
   <p>In partnerships every meld belongs to the <b>side</b>, not the player:
-  either partner can extend any of them, and once one partner has gone down the
-  side's minimum is satisfied for both. In practice one of you keeps the whole
+  either partner can add to any of them, and once one partner has gone down the
+  side is down &mdash; the other owes no minimum that round. In practice one of you keeps the whole
   side's melds laid out in front of them rather than splitting them across the
-  table &mdash; it makes no difference to the scoring, it is just easier to
-  read.</p>
+  table. It makes no difference to the scoring, it is just easier to read.</p>
   <div class="callout">
     <p><b>Booking one:</b> square the canasta up and put a <b>red</b> card on
     top if it is natural, a <b>black</b> one if it is dirty. Anyone can then
@@ -221,7 +220,7 @@
     <thead><tr><th>Your side's score</th><th>Minimum to go down</th></tr></thead>
     <tbody></tbody>
   </table>
-  <p class="dim">A side that has gone negative needs the lowest minimum of all.</p>
+  <p class="dim">A side below zero needs the lowest minimum of all.</p>
   <p>You can go down by taking the discard pile, and everything you lay from
   your hand counts toward the minimum &mdash; all of it, plus the top card of
   the pile. Add the lot together.</p>
@@ -256,13 +255,13 @@
   they do not thaw it.</p>
 
   <h2>Red 3s</h2>
-  <p>Red 3s are bonus cards &mdash; they are never melded into a rank like
+  <p>Red 3s are bonus cards. They are never melded into a rank like
   everything else, they just get laid down in front of you and count. There are
   <b class="n" id="r3n"></b> of them in the shoe, two per deck.</p>
   <p>Putting one down is up to you: hold it as long as you like and place it on
   your turn whenever you want, and you <b>draw a replacement card</b> when you
   do.</p>
-  <p>Because you can hold one, you can also <b>discard</b> one &mdash; and a
+  <p>Because you can hold one, you can also <b>discard</b> one, and a
   discarded red 3 <b>freezes the pile</b>, exactly as a wild does. It is the one
   good reason to sit on a red 3 rather than get it down, though you give up the
   <b class="n" id="r3give"></b> it would have paid you.</p>
@@ -313,7 +312,7 @@
 
   <h2>Winning</h2>
   <p>Scores are totted up at the end of each round. The first side at or over
-  <b class="n" id="target"></b> takes it, and if both cross in the same round
+  <b class="n" id="target"></b> takes the game, and if both cross in the same round
   the higher total wins.</p>
 
   <h2>A round, counted up</h2>
@@ -343,7 +342,7 @@ rows('cards', CARD_VALUES.map(c => [c.long, c.v]).concat([
 rows('ladder', meldLadder().map(s => [s.at, s.need]));
 rows('canastas', [
   ['Natural &mdash; no wilds in it', money(SCORE.natural)],
-  ['Dirty &mdash; contains wilds',   money(SCORE.dirty)],
+  ['Dirty &mdash; a wild in it',   money(SCORE.dirty)],
   ['Wild &mdash; seven wild cards',  money(SCORE.wild)]
 ]);
 rows('bonuses', [
