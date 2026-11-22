@@ -334,16 +334,16 @@ function render(){
       '</div>').join('') + '</div>' +
 
     '<h2>Round ' + (S.rounds.length + 1) + '</h2>' +
+    // whole-round questions, so they sit above the tabs rather than inside one
+    '<div class="card">' +
+      pick('wentOut', 'Who went out?', '+' + SCORE.goOut) +
+      pick('perfectCut', 'Perfect deal?', '+' + SCORE.perfectCut) +
+    '</div>' +
     '<div class="tabs" role="tablist">' + S.teams.map((n,i) =>
       '<button type="button" role="tab" data-tab="' + i + '"><span>' + esc(n) + '</span>' +
         '<small id="tb' + i + '">0</small></button>').join('') +
       '<button type="button" role="tab" data-tab="rounds"><span>Rounds</span>' +
         '<small>' + S.rounds.length + ' played</small></button>' +
-    '</div>' +
-    // the round's shared questions sit over every team tab, not over the history
-    '<div class="card" data-panel="round">' +
-      pick('wentOut', 'Who went out?', '+' + SCORE.goOut) +
-      pick('perfectCut', 'Perfect deal?', '+' + SCORE.perfectCut) +
     '</div>' +
     S.teams.map(entryCard).join('') +
     '<div data-panel="rounds">' + history(tot) + '</div>' +
@@ -373,8 +373,7 @@ function showTab(t){
     b.setAttribute('aria-selected', on);
   });
   app.querySelectorAll('[data-panel]').forEach(p => {
-    const k = p.dataset.panel;
-    p.hidden = k === 'round' ? tab === 'rounds' : k !== String(tab);
+    p.hidden = p.dataset.panel !== String(tab);
   });
 }
 
