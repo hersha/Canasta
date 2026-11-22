@@ -78,14 +78,18 @@
   .step button:disabled{color:var(--line);cursor:default}
   .step output{min-width:30px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
   .step.on output{color:var(--gold)}
-  .seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
-  .seg:last-child{margin-bottom:0}
+  /* compact: label and choices share one line per question */
+  .picks{padding:10px 12px}
+  .pk{display:flex;align-items:center;gap:6px}
+  .pk+.pk{margin-top:8px}
+  .q{flex:none;width:76px;font-size:13px;line-height:1.2;white-space:nowrap}
+  .q em{display:block;color:var(--dim);font-style:normal;font-size:11px}
+  .seg{flex:1;min-width:0;display:flex;gap:4px}
   .seg button{flex:1 1 0;min-width:0;background:var(--panel2);color:var(--dim);
-    border:1px solid var(--line);padding:9px 8px;font-weight:500;
+    border:1px solid var(--line);padding:6px 4px;font-size:13px;font-weight:500;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;touch-action:manipulation}
+  .seg button.none{flex:none;padding:6px 9px}
   .seg button.on{background:var(--gold);color:#241a05;border-color:var(--gold);font-weight:600}
-  .q{font-size:13px}
-  .q em{color:var(--dim);font-style:normal;font-size:11px}
   /* round totals + save, pinned so they never scroll out of reach */
   .dock{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--panel);
     border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
@@ -334,16 +338,16 @@ function render(){
       '</div>').join('') + '</div>' +
 
     '<h2>Round ' + (S.rounds.length + 1) + '</h2>' +
+    // whole-round questions, so they sit above the tabs rather than inside one
+    '<div class="card picks">' +
+      pick('wentOut', 'Went out', '+' + SCORE.goOut) +
+      pick('perfectCut', 'Perfect deal', '+' + SCORE.perfectCut) +
+    '</div>' +
     '<div class="tabs" role="tablist">' + S.teams.map((n,i) =>
       '<button type="button" role="tab" data-tab="' + i + '"><span>' + esc(n) + '</span>' +
         '<small id="tb' + i + '">0</small></button>').join('') +
       '<button type="button" role="tab" data-tab="rounds"><span>Rounds</span>' +
         '<small>' + S.rounds.length + ' played</small></button>' +
-    '</div>' +
-    // the round's shared questions sit over every team tab, not over the history
-    '<div class="card" data-panel="round">' +
-      pick('wentOut', 'Who went out?', '+' + SCORE.goOut) +
-      pick('perfectCut', 'Perfect deal?', '+' + SCORE.perfectCut) +
     '</div>' +
     S.teams.map(entryCard).join('') +
     '<div data-panel="rounds">' + history(tot) + '</div>' +
@@ -373,8 +377,7 @@ function showTab(t){
     b.setAttribute('aria-selected', on);
   });
   app.querySelectorAll('[data-panel]').forEach(p => {
-    const k = p.dataset.panel;
-    p.hidden = k === 'round' ? tab === 'rounds' : k !== String(tab);
+    p.hidden = p.dataset.panel !== String(tab);
   });
 }
 
@@ -382,11 +385,11 @@ function showTab(t){
 // single choice for the round rather than a checkbox on every card.
 const pick = (f, q, note) => {
   const who = draft.findIndex(d => d[f]);
-  return '<div class="q">' + q + ' <em>' + note + '</em></div><div class="seg">' +
+  return '<div class="pk"><div class="q">' + q + ' <em>' + note + '</em></div><div class="seg">' +
     S.teams.map((n,i) => '<button type="button" data-pick="' + f + '" data-i="' + i + '"' +
       (who === i ? ' class="on"' : '') + '>' + esc(n) + '</button>').join('') +
-    '<button type="button" data-pick="' + f + '" data-i="-1"' +
-      (who < 0 ? ' class="on"' : '') + '>Nobody</button></div>';
+    '<button type="button" data-pick="' + f + '" data-i="-1" class="none' +
+      (who < 0 ? ' on' : '') + '">None</button></div></div>';
 };
 
 const stepper = (i, f, d, max) =>
