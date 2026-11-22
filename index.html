@@ -95,6 +95,20 @@
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .dock .dt b{font-size:19px;font-variant-numeric:tabular-nums}
   body.game{padding-bottom:110px}
+  [hidden]{display:none!important}
+  /* one tab per side plus the round history */
+  .tabs{scroll-margin-top:120px;display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px;
+    overflow-x:auto;scrollbar-width:none}
+  .tabs button{flex:1 1 0;min-width:0;background:none;color:var(--dim);border-radius:8px 8px 0 0;
+    border-bottom:3px solid transparent;padding:8px 6px 7px;font-weight:500;
+    touch-action:manipulation}
+  .tabs button span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabs button small{display:block;font-size:12px;font-weight:600;
+    font-variant-numeric:tabular-nums;color:var(--dim)}
+  .tabs button.on{color:var(--ink);border-bottom-color:var(--gold);font-weight:600}
+  .tabs small.pos{color:var(--green)} .tabs small.neg{color:var(--red)}
+  .next{width:100%;margin-top:12px}
+  .empty{color:var(--dim);font-size:14px;text-align:center;padding:18px 0}
   .card.saved{display:flex;align-items:center;gap:10px;cursor:pointer}
   .card.saved:hover{border-color:var(--gold)}
   .card.saved.won{border-color:var(--gold);background:
@@ -261,7 +275,7 @@ function renderSetup(mode){
     const open = e.target.closest('[data-open]');
     if (open){
       S = games.splice(+open.dataset.open, 1)[0];
-      games.unshift(S); draft = []; save(); render();
+      games.unshift(S); draft = []; tab = 0; save(); render();
     }
   };
   $('#start').onclick = () => {
@@ -272,7 +286,7 @@ function renderSetup(mode){
                           : (mode==='2v2' ? 'Team '+(i+1) : 'Player '+(i+1));
     });
     S = {mode: mode, teams: teams, target: +$('#target').value || TARGET_DEFAULT, rounds: []};
-    games.unshift(S); draft = []; save(); render();
+    games.unshift(S); draft = []; tab = 0; save(); render();
   };
 }
 
@@ -294,6 +308,7 @@ function dropGame(i, btn){
 
 /* ---------- game ---------- */
 let draft = [];
+let tab = 0;          // a team's index, or 'rounds' for the history
 
 function render(){
   if (!S) return renderSetup();
@@ -319,17 +334,24 @@ function render(){
       '</div>').join('') + '</div>' +
 
     '<h2>Round ' + (S.rounds.length + 1) + '</h2>' +
-    '<div class="card">' +
+    '<div class="tabs" role="tablist">' + S.teams.map((n,i) =>
+      '<button type="button" role="tab" data-tab="' + i + '"><span>' + esc(n) + '</span>' +
+        '<small id="tb' + i + '">0</small></button>').join('') +
+      '<button type="button" role="tab" data-tab="rounds"><span>Rounds</span>' +
+        '<small>' + S.rounds.length + ' played</small></button>' +
+    '</div>' +
+    // the round's shared questions sit over every team tab, not over the history
+    '<div class="card" data-panel="round">' +
       pick('wentOut', 'Who went out?', '+' + SCORE.goOut) +
       pick('perfectCut', 'Perfect deal?', '+' + SCORE.perfectCut) +
     '</div>' +
-    '<div class="grid">' + S.teams.map(entryCard).join('') + '</div>' +
+    S.teams.map(entryCard).join('') +
+    '<div data-panel="rounds">' + history(tot) + '</div>' +
     '<div class="row" style="margin-top:4px">' +
       '<button class="ghost" id="clear" style="flex:0 0 auto">Clear round</button>' +
       '<button class="ghost" id="call" style="flex:0 0 auto">' +
         (S.called ? 'Reopen game' : 'Call game') + '</button>' +
     '</div>' +
-    (S.rounds.length ? history(tot) : '') +
     refCard() +
     '<div class="dock"><div>' + S.teams.map((n,i) =>
       '<div class="dt"><span>' + esc(n) + '</span><b id="rt' + i + '">0</b></div>').join('') +
@@ -337,7 +359,23 @@ function render(){
 
   document.body.classList.add('game');
   wire();
+  showTab(tab);
   refreshTotals();
+}
+
+// Every panel stays in the page and is only hidden, so half-typed card counts
+// survive a hop to another tab.
+function showTab(t){
+  tab = t === 'rounds' ? t : S.teams[t] !== undefined ? +t : 0;
+  app.querySelectorAll('[data-tab]').forEach(b => {
+    const on = b.dataset.tab === String(tab);
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-selected', on);
+  });
+  app.querySelectorAll('[data-panel]').forEach(p => {
+    const k = p.dataset.panel;
+    p.hidden = k === 'round' ? tab === 'rounds' : k !== String(tab);
+  });
 }
 
 // Going out and the perfect deal belong to one side per round, so they are a
@@ -369,8 +407,8 @@ function entryCard(name, i){
   const d = draft[i];
   const row = (f,label,note,ctl) =>
     '<div class="f"><label>' + label + ' <em>' + note + '</em></label>' + ctl + '</div>';
-  return '<div class="card">' +
-    '<div style="font-weight:600;margin-bottom:10px">' + esc(name) + '</div>' +
+  const nxt = S.teams[i+1];
+  return '<div class="card" data-panel="' + i + '">' +
     row('natural','Natural canastas','x' + SCORE.natural, stepper(i,'natural',d)) +
     row('dirty','Dirty canastas','x' + SCORE.dirty, stepper(i,'dirty',d)) +
     row('wild','Wild canastas','x' + SCORE.wild, stepper(i,'wild',d)) +
@@ -379,6 +417,8 @@ function entryCard(name, i){
     '<div class="sub">Card points</div>' +
     row('meld','Melded on table','+', numField(i,'meld',d.meld)) + counter(i,'meld') +
     row('hand','Left in hand','-', numField(i,'hand',d.hand)) + counter(i,'hand') +
+    (nxt !== undefined ? '<button type="button" class="ghost next" data-tab="' + (i+1) + '">' +
+      'Next: ' + esc(nxt) + ' &rarr;</button>' : '') +
   '</div>';
 }
 
@@ -398,8 +438,10 @@ const counter = (i,f) =>
   '</details>';
 
 function history(tot){
+  if (!S.rounds.length)
+    return '<div class="card"><div class="empty">No rounds saved yet.</div></div>';
   const run = S.teams.map(() => 0);
-  return '<h2>Rounds</h2><div class="card" style="overflow-x:auto"><table>' +
+  return '<div class="card" style="overflow-x:auto"><table>' +
     '<thead><tr><th>#</th>' + S.teams.map(n => '<th>' + esc(n) + '</th>').join('') + '<th></th></tr></thead>' +
     '<tbody>' + S.rounds.map((r,ri) =>
       '<tr><td>' + (ri+1) + '</td>' +
@@ -468,6 +510,12 @@ function wire(){
     const b = e.target.closest('button');
     if (!b) return;
     if (b.dataset.del !== undefined){ S.rounds.splice(+b.dataset.del,1); save(); render(); return; }
+    if (b.dataset.tab !== undefined){
+      showTab(b.dataset.tab);
+      const bar = app.querySelector('.tabs');      // scrolled past the tabs? bring them back
+      if (bar.getBoundingClientRect().top < 0) bar.scrollIntoView({behavior:'smooth'});
+      return;
+    }
     if (b.dataset.d){                                // canasta / red 3 stepper
       const box = b.closest('.step'), i = box.dataset.t, f = box.dataset.f;
       const max = +box.dataset.max || Infinity;
@@ -488,10 +536,10 @@ function wire(){
   };
   $('#add').onclick = () => {
     S.rounds.push(draft.map(d => Object.assign({}, d)));
-    draft = S.teams.map(() => Object.assign({}, BLANK));
+    draft = S.teams.map(() => Object.assign({}, BLANK)); tab = 0;
     save(); render(); scrollTo({top:0, behavior:'smooth'});
   };
-  $('#clear').onclick = () => { draft = S.teams.map(() => Object.assign({}, BLANK)); render(); };
+  $('#clear').onclick = () => { draft = S.teams.map(() => Object.assign({}, BLANK)); tab = 0; render(); };
   $('#call').onclick = () => { S.called = !S.called; save(); render(); scrollTo({top:0,behavior:'smooth'}); };
 }
 
@@ -499,6 +547,8 @@ const refreshTotals = () => draft.forEach((d,i) => {
   const v = scoreTeam(d), el = $('#rt'+i);
   el.textContent = (v>0 ? '+' : '') + money(v);
   el.className = v<0 ? 'neg' : v>0 ? 'pos' : '';
+  const tb = $('#tb'+i);           // the same figure, small, on the team's tab
+  tb.textContent = el.textContent; tb.className = el.className;
 });
 
 // Non-destructive now: the running game stays in `games`, so this just steps back
