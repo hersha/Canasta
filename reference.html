@@ -43,7 +43,7 @@
      one stranded, and they stretch to a matching height per row. The pairing
      in the markup keeps that stretch small. */
   .sheet{display:grid;gap:14px;
-    grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+    grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr))}
   .blk{background:var(--panel);border:1px solid var(--line);border-radius:10px;
     padding:14px 16px;break-inside:avoid;display:flex;flex-direction:column}
   .blk h4{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:1px;
@@ -138,7 +138,7 @@
 </head>
 <body>
 <header>
-  <h1>Canasta &mdash; Scoring Reference</h1>
+  <h1>Canasta<span class="pt"> &mdash; Scoring Reference</span></h1>
   <span class="sp"></span>
   <nav>
     <a href="index.html">Scorer</a>
