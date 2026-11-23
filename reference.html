@@ -101,6 +101,65 @@
     .card{zoom:1.2}
   }
 
+  /* ---------- phones: the full sheet on one screen, nothing to scroll ----------
+     Same idea as the scorer: the page is a full-height column, the sheet takes
+     what is left under the toolbar, and its blocks pair off two by two and
+     spread their rows to fill it. Only if a very short phone can't fit it all
+     does the sheet scroll inside itself. */
+  @media screen and (max-width:640px){
+    body.v-sheet{height:100vh;height:100dvh;padding:0;overflow:hidden;
+      display:flex;flex-direction:column}
+    body.v-sheet header{flex:none}
+    body.v-sheet main{flex:1;min-height:0;width:100%;padding:8px 12px 10px;
+      display:flex;flex-direction:column}
+    body.v-sheet .toolbar{flex:none;margin:0 0 8px;flex-wrap:nowrap}
+    body.v-sheet .cap{display:none}
+    body.v-sheet #print{margin-left:auto}
+    body.v-sheet .sheetwrap{flex:1;min-height:0;display:flex;flex-direction:column}
+    body.v-sheet .sheet{flex:1;min-height:0;overflow-y:auto;gap:8px;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      /* spare height goes to the two rows of tables, not the ladder */
+      grid-template-rows:minmax(min-content,1.3fr) minmax(min-content,1fr) auto}
+    .blk{padding:8px 10px;border-radius:9px}
+    .blk h4{font-size:10px;margin-bottom:2px;padding-bottom:5px}
+    .blk>div{flex:1;display:flex;flex-direction:column;justify-content:space-around}
+    .r{font-size:13px;padding:3px 0;gap:6px}
+    .note{font-size:11px;line-height:1.35;margin-top:6px;padding-top:5px}
+    .blk>.lad{flex:none;flex-direction:row;gap:5px;flex-wrap:nowrap}
+    .lad div{min-width:0;padding:6px 2px}
+    .lad div b{font-size:18px}
+    .lad div span{font-size:10px}
+  }
+  /* tall phones: there is room for the type to come up a size */
+  @media screen and (max-width:640px) and (min-height:760px){
+    .r{font-size:15px}
+    .blk h4{font-size:11px}
+    .note{font-size:12px}
+    .lad div b{font-size:21px}
+    .lad div span{font-size:11px}
+  }
+  /* narrow phones: two columns get tight, so the type comes down a step */
+  @media screen and (max-width:380px){
+    body.v-sheet main{padding:6px 8px 8px}
+    body.v-sheet .sheet{gap:6px}
+    .blk{padding:6px 8px}
+    .r{font-size:11.5px;padding:2px 0;gap:4px}
+    .r b{font-size:11.5px}
+    .note{font-size:10px;line-height:1.3}
+    .lad div b{font-size:16px}
+    .lad div span{font-size:9px}
+  }
+  /* short phones (SE-class): squeeze the chrome and the row padding */
+  @media screen and (max-width:640px) and (max-height:620px){
+    body.v-sheet .toolbar{margin-bottom:6px}
+    body.v-sheet .seg button{padding:5px 10px}
+    body.v-sheet #print{padding:6px 12px}
+    .blk h4{padding-bottom:3px;margin-bottom:1px}
+    .r{padding:1px 0}
+    .note{margin-top:4px;padding-top:3px}
+    .lad div{padding:4px 2px}
+  }
+
   @media print{
     @page{margin:18mm}
     body{background:#fff;color:#000;padding:0}
