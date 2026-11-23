@@ -120,13 +120,8 @@
      "count it out" overflows it, scrolls on its own. */
   @media (max-width:640px){
     body.game{height:100vh;height:100dvh;padding:0;display:flex;flex-direction:column;overflow:hidden}
-    body.game header{flex:none;padding:8px 12px;gap:8px;flex-wrap:nowrap}
-    body.game header h1{font-size:16px}
-    body.game header nav{flex-wrap:nowrap;gap:4px}
-    body.game header nav a{padding:4px 8px;font-size:12px}
-    body.game header #reset{padding:4px 8px;font-size:12px}
-    body.game header .sp{display:none}
-    body.game header #reset{margin-left:auto}
+    body.game header{flex:none}
+    header #reset{padding:4px 8px;font-size:12px}
     body.game main{flex:1;min-height:0;width:100%;padding:8px 12px 0;
       display:flex;flex-direction:column}
     body.game main>*{flex:none}
@@ -211,7 +206,6 @@
   }
   /* the smallest phones: the title gives way so the nav keeps one row */
   @media (max-width:370px){
-    body.game header h1{display:none}
     body.game .dock>div{gap:8px}
     body.game .dock button{padding:10px 12px}
   }
@@ -418,7 +412,13 @@ let tab = 0;          // a team's index, or 'rounds' for the history
 
 function render(){
   if (!S) return renderSetup();
-  if (draft.length !== S.teams.length) draft = S.teams.map(() => Object.assign({}, BLANK));
+  // The round being entered is kept on the game itself, so stepping over to
+  // Rules or Reference (or switching games) and back picks up where you were.
+  if (draft.length !== S.teams.length){
+    const kept = S.draft && S.draft.length === S.teams.length;
+    draft = S.teams.map((_,i) => Object.assign({}, BLANK, kept ? S.draft[i] : null));
+    tab = S.tab !== undefined ? S.tab : 0;
+  }
 
   const tot = totals();
   const best = Math.max.apply(null, tot);
@@ -474,6 +474,7 @@ function render(){
 // survive a hop to another tab.
 function showTab(t){
   tab = t === 'rounds' ? t : S.teams[t] !== undefined ? +t : 0;
+  if (S.tab !== tab){ S.tab = tab; save(); }
   app.querySelectorAll('[data-tab]').forEach(b => {
     const on = b.dataset.tab === String(tab);
     b.classList.toggle('on', on);
@@ -651,13 +652,14 @@ function wire(){
   $('#call').onclick = () => { S.called = !S.called; save(); render(); scrollTo({top:0,behavior:'smooth'}); };
 }
 
-const refreshTotals = () => draft.forEach((d,i) => {
+// Every draft change ends here, so this is also where the draft is stored.
+const refreshTotals = () => { S.draft = draft; save(); draft.forEach((d,i) => {
   const v = scoreTeam(d), el = $('#rt'+i);
   el.textContent = (v>0 ? '+' : '') + money(v);
   el.className = v<0 ? 'neg' : v>0 ? 'pos' : '';
   const tb = $('#tb'+i);           // the same figure, small, on the team's tab
   tb.textContent = el.textContent; tb.className = el.className;
-});
+}); };
 
 // Non-destructive now: the running game stays in `games`, so this just steps back
 // to the list. Nothing to confirm.

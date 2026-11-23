@@ -2,14 +2,18 @@
    supplies its own <h1>; everything else about the header lives here so the
    three pages cannot drift apart again. */
 
+/* One row on every page and at every width, so moving between pages never
+   moves the nav. The page name only shows in print (.pt); on screen the
+   highlighted nav button already says where you are. */
 header{background:var(--panel);border-bottom:1px solid var(--line);
-  padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  position:sticky;top:0;z-index:5;
+  padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;
+  position:sticky;top:0;z-index:5;font-size:16px;line-height:1.45;
   font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
 header h1{font-size:19px;margin:0;letter-spacing:.3px;font-family:inherit}
 header .sp{flex:1}
+header .pt{display:none}
 
-header nav{display:flex;gap:6px;flex-wrap:wrap}
+header nav{display:flex;gap:6px;flex-wrap:nowrap}
 header nav a{color:var(--dim);text-decoration:none;font-size:13px;
   border:1px solid var(--line);border-radius:8px;padding:5px 11px;
   white-space:nowrap}
@@ -17,6 +21,24 @@ header nav a:hover{color:var(--ink);border-color:var(--gold)}
 header nav a[aria-current="page"]{background:var(--gold);color:#241a05;
   border-color:var(--gold);font-weight:600;cursor:default}
 
+@media (max-width:640px){
+  header{padding:8px 12px;gap:6px}
+  header h1{font-size:16px}
+  header nav{gap:4px}
+  header nav a{padding:4px 8px;font-size:12px}
+}
+/* the smallest phones: the title gives way so the nav keeps one row */
+@media (max-width:370px){
+  header h1{display:none}
+  header .sp{flex:1}
+}
+
+/* move between pages with a quick crossfade instead of a blank flash, where
+   the browser supports it; the header is named so it stays put */
+@view-transition{navigation:auto}
+header{view-transition-name:site-header}
+
 @media print{
   header nav{display:none}
+  header .pt{display:inline}
 }
