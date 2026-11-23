@@ -68,19 +68,29 @@
   .sheetfoot{display:none;font-size:9pt;color:#555;margin-top:10px}
 
   /* ---------- playing card: exactly 2.5in x 3.5in, screen and paper ---------- */
+  /* sections spread over the full height: whatever space the content leaves
+     goes between them, so the card never ends in a blank band */
   .card{width:2.5in;height:3.5in;background:var(--panel);border:1px solid var(--line);
-    border-radius:10pt;padding:7pt 8pt;overflow:hidden;
-    font:6pt/1.3 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-  .card h4{font-size:9pt;margin:0 0 3pt;color:var(--gold)}
-  .card h4 small{float:right;font-size:5pt;color:var(--dim);font-weight:400;padding-top:3pt}
-  .g{margin-top:4pt}
-  .g b{display:block;font-size:5pt;text-transform:uppercase;letter-spacing:.6pt;
+    border-radius:10pt;padding:7pt 8pt 8pt;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:space-between;
+    font:6.8pt/1.3 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .card h4{font-size:10.5pt;margin:0;color:var(--gold);line-height:1}
+  .card h4 small{float:right;font-size:5.5pt;color:var(--dim);font-weight:400;padding-top:3pt}
+  .g b{display:block;font-size:5.5pt;text-transform:uppercase;letter-spacing:.6pt;
     color:var(--gold);border-bottom:.5pt solid var(--line);padding-bottom:1pt;
-    margin-bottom:2pt;font-weight:700}
-  .g p{margin:0 0 1.5pt}
+    margin-bottom:2.5pt;font-weight:700}
+  .g p{margin:0 0 1pt}
+  .g p:last-child{margin-bottom:0}
   .g i{font-style:normal;color:var(--dim)}
   .g u{text-decoration:none;font-weight:700}
   .g .neg u{color:var(--red)}
+  /* the numbers players look up most get tiles, value over label */
+  .tiles{display:flex;gap:2.5pt;margin-bottom:2pt}
+  .tiles:last-child{margin-bottom:0}
+  .tiles div{flex:1;min-width:0;text-align:center;background:var(--panel2);
+    border:.5pt solid var(--line);border-radius:3pt;padding:2pt 1pt 1.5pt}
+  .tiles u{display:block;font-size:10pt;line-height:1.1;color:var(--gold)}
+  .tiles span{display:block;font-size:5.3pt;color:var(--dim);white-space:nowrap}
 
   /* zoom (not transform) so the card still takes up its magnified size in
      layout - that is what lets margin:auto centre it. */
@@ -120,6 +130,9 @@
     .g b{color:#000;border-bottom:.5pt solid #999}
     .g i{color:#444}
     .g .neg u{color:#000}
+    .tiles div{background:none;border:.5pt solid #999}
+    .tiles u{color:#000}
+    .tiles span{color:#444}
   }
 </style>
 </head>
@@ -212,33 +225,36 @@ el('s-ladder').innerHTML = meldLadder().map(s =>
 const dot = xs => xs.join(' <i>&middot;</i> ');
 const v   = (label, val) => label + ' <u>' + val + '</u>';
 
+const tiles = xs => '<div class="tiles">' + xs.map(t =>
+  '<div><u>' + t[1] + '</u><span>' + t[0] + '</span></div>').join('') + '</div>';
+
 el('c-cards').innerHTML =
-  '<p>' + dot(CARD_VALUES.map(c => v(c.short, c.v))) + '</p>' +
-  '<p class="neg">' + dot([v('blk 3', '&minus;' + SCORE.blackThree),
+  tiles(CARD_VALUES.map(c => [c.short, c.v])) +
+  '<p class="neg">' + dot([v('black 3', '&minus;' + SCORE.blackThree),
                            v('red 3 in hand', '&minus;' + SCORE.red3InHand)]) +
   ' <i>(never melded)</i></p>';
 
-el('c-canastas').innerHTML = '<p>' + dot([
-  v('natural', money(SCORE.natural)),
-  v('dirty',   money(SCORE.dirty)),
-  v('wild',    money(SCORE.wild))]) + '</p>';
+el('c-canastas').innerHTML = tiles([
+  ['natural', money(SCORE.natural)],
+  ['dirty',   money(SCORE.dirty)],
+  ['wild',    money(SCORE.wild)]]);
 
 el('c-bonuses').innerHTML =
-  '<p>' + dot([v('red 3 down', SCORE.red3),
-               v(SCORE.red3DoubleAt + '+ red 3s', 'x2')]) +
-  ' <i>&middot; no canasta &rarr; negative</i></p>' +
+  '<p>' + dot([v('red 3 down', SCORE.red3 + ' each'),
+               v(SCORE.red3DoubleAt + '+ red 3s', 'x2')]) + '</p>' +
+  '<p class="neg">' + v('no canasta', 'red 3s count negative') + '</p>' +
   '<p>' + dot([v('going out', '+' + SCORE.goOut),
                v('perfect deal', '+' + SCORE.perfectCut)]) + '</p>';
 
-el('c-ladder').innerHTML = '<p>' + dot(meldLadder().map(s => v(s.at, s.need))) + '</p>';
+el('c-ladder').innerHTML = tiles(meldLadder().map(s => [s.at, s.need]));
 
 el('c-game').innerHTML =
-  '<p>' + dot([v('decks', DEAL.decks + '+' + DEAL.jokers + ' jkr'),
+  '<p>' + dot([v('decks', DEAL.decks + ' + ' + DEAL.jokers + ' jokers'),
                v('dealt', DEAL.hand),
-               v('turn', 'draw ' + DEAL.draw + ', disc 1')]) + '</p>' +
-  '<p>' + dot([v('wild', '2s, Jkr'),
-               v('to go out', DEAL.canastasToGoOut + ' canastas'),
-               v('play to', money(TARGET_DEFAULT))]) + '</p>';
+               v('wild', '2s, Jokers')]) + '</p>' +
+  '<p>' + dot([v('each turn', 'draw ' + DEAL.draw + ', discard 1'),
+               v('to go out', DEAL.canastasToGoOut + ' canastas')]) + '</p>' +
+  '<p>' + v('play to', money(TARGET_DEFAULT)) + '</p>';
 
 /* The toggle sets a body class that hides the other layout in every medium,
    so Print - and a plain Ctrl+P - gets whatever is on screen. */
