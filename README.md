@@ -21,6 +21,12 @@ All of it lives in `rules.js`:
 Change a number there and the scorer, the tick marks on the progress bars, and
 the rules page all follow.
 
+## Shipping a change to the shared files
+
+`nav.css` and `rules.js` are loaded as `nav.css?v=N` / `rules.js?v=N` from all
+three pages. Bump `N` in every page when you change either file, or phones
+can pair a new page with the stylesheet or rules they cached earlier.
+
 ## Tests
 
 Open `index.html?test` with the browser console showing. Scoring, meld tiers,

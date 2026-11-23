@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Canasta">
-<link rel="stylesheet" href="nav.css">
+<link rel="stylesheet" href="nav.css?v=2">
 <style>
   :root{
     --bg:#0f1a14; --panel:#16241c; --panel2:#1d3026; --line:#2c4a39;
@@ -329,7 +329,7 @@
 </main>
 <footer>The scorer and this page read the same numbers, so they cannot disagree.</footer>
 
-<script src="rules.js"></script>
+<script src="rules.js?v=2"></script>
 <script>
 const el = id => document.getElementById(id);
 const rows = (id, data) => el(id).innerHTML = data.map(r =>

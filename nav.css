@@ -9,7 +9,11 @@ header{background:var(--panel);border-bottom:1px solid var(--line);
   padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;
   position:sticky;top:0;z-index:5;font-size:16px;line-height:1.45;
   font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-header h1{font-size:19px;margin:0;letter-spacing:.3px;font-family:inherit}
+/* the title is the part that gives way - it shrinks and clips before the
+   header could ever need a second line (big text sizes, page zoom) */
+header h1{font-size:19px;margin:0;letter-spacing:.3px;font-family:inherit;
+  min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header nav,header button{flex:none}
 header .sp{flex:1}
 header .pt{display:none}
 
