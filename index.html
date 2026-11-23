@@ -113,6 +113,81 @@
   .tabs small.pos{color:var(--green)} .tabs small.neg{color:var(--red)}
   .next{width:100%;margin-top:12px}
   .empty{color:var(--dim);font-size:14px;text-align:center;padding:18px 0}
+
+  /* ---------- phones: the whole game on one screen, nothing to scroll ----------
+     The page becomes a full-height column. Everything is sized to its content
+     except the open tab, which takes what is left and, only if something like
+     "count it out" overflows it, scrolls on its own. */
+  @media (max-width:640px){
+    body.game{height:100vh;height:100dvh;padding:0;display:flex;flex-direction:column;overflow:hidden}
+    body.game header{flex:none;padding:8px 12px;gap:8px;flex-wrap:nowrap}
+    body.game header h1{font-size:16px}
+    body.game header nav{flex-wrap:nowrap;gap:4px}
+    body.game header nav a{padding:4px 8px;font-size:12px}
+    body.game header #reset{padding:4px 8px;font-size:12px}
+    body.game header .sp{display:none}
+    body.game header #reset{margin-left:auto}
+    body.game main{flex:1;min-height:0;width:100%;padding:8px 12px 0;
+      display:flex;flex-direction:column}
+    body.game main>*{flex:none}
+    body.game .rnd,body.game .refwrap,body.game .next{display:none}
+
+    body.game .win{padding:7px 12px;font-size:15px;margin-bottom:8px;border-radius:10px}
+    body.game .board{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+    body.game .board .t{padding:6px 8px;border-radius:10px}
+    body.game .board .name{font-size:12px}
+    body.game .board .score{font-size:22px;margin:0;line-height:1.15}
+    body.game .board .meld{font-size:10px;margin:0}
+    body.game .board .meld b{font-size:11px}
+    body.game .bar{height:5px;margin-top:5px}
+
+    body.game .picks{margin:8px 0}
+    body.game .pk+.pk{margin-top:6px}
+    body.game .tabs{margin-bottom:8px}
+    body.game .tabs button{padding:4px 4px 5px;font-size:14px}
+    body.game .tabs button small{font-size:11px}
+
+    body.game [data-panel]{flex:1;min-height:0;overflow-y:auto;margin-bottom:8px;
+      -webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .entry{padding:10px 12px}
+    .lg{display:none}
+    .cans{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+    .cans .f{flex-direction:column;align-items:stretch;gap:3px;margin:0}
+    .cans .step{justify-content:space-between}
+    .cans .step button{height:34px}
+    .entry .sub{margin-top:10px;padding-top:0;font-size:0}
+    /* meld and hand side by side too; an open tally spans both columns */
+    .pts{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:8px}
+    .pts .f{flex-direction:column;align-items:stretch;gap:3px;margin:0}
+    .pts .f input.num{width:100%;padding:7px 8px}
+    .entry details.counter{margin:4px 0 0}
+    .pts:has(details[open]){grid-template-columns:1fr}
+
+    body.game .dock{position:static;flex:none;margin:0 -12px;padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+    body.game .dock .dt b{font-size:17px}
+  }
+  /* short phones (SE-class): shave what can go so the card still fits whole */
+  @media (max-width:640px) and (max-height:600px){
+    body.game .bar{display:none}
+    body.game .board .t{padding:5px 8px}
+    body.game .board .score{font-size:20px}
+    body.game .picks{padding:7px 10px;margin:6px 0}
+    body.game .pk+.pk{margin-top:4px}
+    body.game .seg button{padding:5px 4px}
+    body.game .tabs button{padding:2px 4px 4px}
+    body.game .tabs{margin-bottom:6px}
+    .cans{gap:6px 12px}
+    .cans .step button{height:30px}
+    .entry{padding:8px 12px}
+    .pts{margin-top:6px}
+    .pts .f input.num{padding:5px 8px}
+  }
+  /* the smallest phones: the title gives way so the nav keeps one row */
+  @media (max-width:370px){
+    body.game header h1{display:none}
+    body.game .dock>div{gap:8px}
+    body.game .dock button{padding:10px 12px}
+  }
   .card.saved{display:flex;align-items:center;gap:10px;cursor:pointer}
   .card.saved:hover{border-color:var(--gold)}
   .card.saved.won{border-color:var(--gold);background:
@@ -337,7 +412,7 @@ function render(){
           Math.max(0, Math.min(100, tot[i]/S.target*100)) + '%"></i>' + tickMarks() + '</div>' +
       '</div>').join('') + '</div>' +
 
-    '<h2>Round ' + (S.rounds.length + 1) + '</h2>' +
+    '<h2 class="rnd">Round ' + (S.rounds.length + 1) + '</h2>' +
     // whole-round questions, so they sit above the tabs rather than inside one
     '<div class="card picks">' +
       pick('wentOut', 'Went out', '+' + SCORE.goOut) +
@@ -350,16 +425,17 @@ function render(){
         '<small>' + S.rounds.length + ' played</small></button>' +
     '</div>' +
     S.teams.map(entryCard).join('') +
-    '<div data-panel="rounds">' + history(tot) + '</div>' +
-    '<div class="row" style="margin-top:4px">' +
-      '<button class="ghost" id="clear" style="flex:0 0 auto">Clear round</button>' +
-      '<button class="ghost" id="call" style="flex:0 0 auto">' +
-        (S.called ? 'Reopen game' : 'Call game') + '</button>' +
-    '</div>' +
-    refCard() +
+    // game-level actions live with the history, out of the way of round entry
+    '<div data-panel="rounds">' + history(tot) +
+      '<div class="row" style="margin-top:4px">' +
+        '<button class="ghost" id="clear" style="flex:0 0 auto">Clear this round</button>' +
+        '<button class="ghost" id="call" style="flex:0 0 auto">' +
+          (S.called ? 'Reopen game' : 'Call game') + '</button>' +
+      '</div></div>' +
+    '<div class="refwrap">' + refCard() + '</div>' +
     '<div class="dock"><div>' + S.teams.map((n,i) =>
       '<div class="dt"><span>' + esc(n) + '</span><b id="rt' + i + '">0</b></div>').join('') +
-      '<button id="add" style="flex:none">Save round</button></div></div>';
+      '<button id="add" style="flex:none">Save round ' + (S.rounds.length + 1) + '</button></div></div>';
 
   document.body.classList.add('game');
   wire();
@@ -411,15 +487,17 @@ function entryCard(name, i){
   const row = (f,label,note,ctl) =>
     '<div class="f"><label>' + label + ' <em>' + note + '</em></label>' + ctl + '</div>';
   const nxt = S.teams[i+1];
-  return '<div class="card" data-panel="' + i + '">' +
-    row('natural','Natural canastas','x' + SCORE.natural, stepper(i,'natural',d)) +
-    row('dirty','Dirty canastas','x' + SCORE.dirty, stepper(i,'dirty',d)) +
-    row('wild','Wild canastas','x' + SCORE.wild, stepper(i,'wild',d)) +
-    row('red3','Red 3s','x' + SCORE.red3 + ', doubled at ' + SCORE.red3DoubleAt + '+',
-        stepper(i,'red3',d,DEAL.red3s)) +
+  // .lg words drop out on phones, where the four steppers sit two by two
+  return '<div class="card entry" data-panel="' + i + '"><div class="cans">' +
+    row('natural','Natural<span class="lg"> canastas</span>','x' + SCORE.natural, stepper(i,'natural',d)) +
+    row('dirty','Dirty<span class="lg"> canastas</span>','x' + SCORE.dirty, stepper(i,'dirty',d)) +
+    row('wild','Wild<span class="lg"> canastas</span>','x' + SCORE.wild, stepper(i,'wild',d)) +
+    row('red3','Red 3s','x' + SCORE.red3 + '<span class="lg">, doubled at ' + SCORE.red3DoubleAt + '+</span>',
+        stepper(i,'red3',d,DEAL.red3s)) + '</div>' +
     '<div class="sub">Card points</div>' +
-    row('meld','Melded on table','+', numField(i,'meld',d.meld)) + counter(i,'meld') +
-    row('hand','Left in hand','-', numField(i,'hand',d.hand)) + counter(i,'hand') +
+    '<div class="pts"><div>' +
+      row('meld','Melded on table','+', numField(i,'meld',d.meld)) + counter(i,'meld') + '</div><div>' +
+      row('hand','Left in hand','-', numField(i,'hand',d.hand)) + counter(i,'hand') + '</div></div>' +
     (nxt !== undefined ? '<button type="button" class="ghost next" data-tab="' + (i+1) + '">' +
       'Next: ' + esc(nxt) + ' &rarr;</button>' : '') +
   '</div>';
